@@ -6,9 +6,7 @@
 //  Copyright © 2018年 wcc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-@interface FirstViewController : UIViewController
+@interface FirstViewController : QMUICommonViewController
 
 
 @end
