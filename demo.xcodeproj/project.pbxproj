@@ -11,7 +11,6 @@
 		5ED84162207DD5AA00C8D96E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84161207DD5AA00C8D96E /* AppDelegate.m */; };
 		5ED84165207DD5AA00C8D96E /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84164207DD5AA00C8D96E /* FirstViewController.m */; };
 		5ED84168207DD5AA00C8D96E /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84167207DD5AA00C8D96E /* SecondViewController.m */; };
-		5ED84170207DD5AE00C8D96E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5ED8416E207DD5AE00C8D96E /* LaunchScreen.storyboard */; };
 		5ED84173207DD5AE00C8D96E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84172207DD5AE00C8D96E /* main.m */; };
 		5ED84189207DD83600C8D96E /* NSDictionary+ADSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84180207DD83600C8D96E /* NSDictionary+ADSCategory.m */; };
 		5ED8418A207DD83600C8D96E /* NSObject+GetClassProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84183207DD83600C8D96E /* NSObject+GetClassProperty.m */; };
@@ -34,7 +33,6 @@
 		5ED84164207DD5AA00C8D96E /* FirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirstViewController.m; sourceTree = "<group>"; };
 		5ED84166207DD5AA00C8D96E /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
 		5ED84167207DD5AA00C8D96E /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
-		5ED8416F207DD5AE00C8D96E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5ED84171207DD5AE00C8D96E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5ED84172207DD5AE00C8D96E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5ED8417F207DD83600C8D96E /* NSDictionary+ADSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+ADSCategory.h"; sourceTree = "<group>"; };
@@ -104,7 +102,6 @@
 				5ED84164207DD5AA00C8D96E /* FirstViewController.m */,
 				5ED84166207DD5AA00C8D96E /* SecondViewController.h */,
 				5ED84167207DD5AA00C8D96E /* SecondViewController.m */,
-				5ED8416E207DD5AE00C8D96E /* LaunchScreen.storyboard */,
 				5ED84171207DD5AE00C8D96E /* Info.plist */,
 				5ED84172207DD5AE00C8D96E /* main.m */,
 			);
@@ -284,7 +281,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5ED841A9207DEF1200C8D96E /* demo.xcassets in Resources */,
-				5ED84170207DD5AE00C8D96E /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,17 +357,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		5ED8416E207DD5AE00C8D96E /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5ED8416F207DD5AE00C8D96E /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5ED84174207DD5AE00C8D96E /* Debug */ = {
@@ -494,12 +479,14 @@
 				DEVELOPMENT_TEAM = B74XK883LC;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/demo/Global/Config.pch";
+				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
 				INFOPLIST_FILE = demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dongsheng.test5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/demo/Global/Config.pch";
@@ -517,12 +504,14 @@
 				DEVELOPMENT_TEAM = B74XK883LC;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/demo/Global/Config.pch";
+				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
 				INFOPLIST_FILE = demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dongsheng.test5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/demo/Global/Config.pch";
