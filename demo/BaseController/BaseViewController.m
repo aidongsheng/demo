@@ -25,7 +25,6 @@
     [super viewWillAppear:animated];
     AFSecurityPolicy * policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
     [[YTKNetworkConfig sharedConfig] setSecurityPolicy:policy];
-    
 }
 - (void)viewDidAppear:(BOOL)animated
 {

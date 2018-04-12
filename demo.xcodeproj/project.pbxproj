@@ -22,6 +22,10 @@
 		5EDDE986207DF276008577DE /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EDDE985207DF276008577DE /* BaseViewController.m */; };
 		5EDDE995207DF7C8008577DE /* UIViewController+DefaultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EDDE994207DF7C8008577DE /* UIViewController+DefaultView.m */; };
 		5EDDE999207DF7D8008577DE /* UIFont+Fonts.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EDDE998207DF7D8008577DE /* UIFont+Fonts.m */; };
+		5EDDE9B5207EFF17008577DE /* MBProgressHUD+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EDDE9B4207EFF17008577DE /* MBProgressHUD+Category.m */; };
+		5EDDE9BB207F0861008577DE /* UIView+TouchEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EDDE9BA207F0861008577DE /* UIView+TouchEvent.m */; };
+		5EDDE9BF207F2524008577DE /* CAShapeLayer+WCCAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EDDE9BE207F2524008577DE /* CAShapeLayer+WCCAdd.m */; };
+		5EDDEA21207F3C0E008577DE /* AppDelegate+InitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EDDEA20207F3C0E008577DE /* AppDelegate+InitViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +59,15 @@
 		5EDDE994207DF7C8008577DE /* UIViewController+DefaultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+DefaultView.m"; sourceTree = "<group>"; };
 		5EDDE997207DF7D8008577DE /* UIFont+Fonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Fonts.h"; sourceTree = "<group>"; };
 		5EDDE998207DF7D8008577DE /* UIFont+Fonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Fonts.m"; sourceTree = "<group>"; };
+		5EDDE9B3207EFF17008577DE /* MBProgressHUD+Category.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MBProgressHUD+Category.h"; sourceTree = "<group>"; };
+		5EDDE9B4207EFF17008577DE /* MBProgressHUD+Category.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD+Category.m"; sourceTree = "<group>"; };
+		5EDDE9B7207F0001008577DE /* ApplicationMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationMacros.h; sourceTree = "<group>"; };
+		5EDDE9B9207F0861008577DE /* UIView+TouchEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+TouchEvent.h"; sourceTree = "<group>"; };
+		5EDDE9BA207F0861008577DE /* UIView+TouchEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+TouchEvent.m"; sourceTree = "<group>"; };
+		5EDDE9BD207F2524008577DE /* CAShapeLayer+WCCAdd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CAShapeLayer+WCCAdd.h"; sourceTree = "<group>"; };
+		5EDDE9BE207F2524008577DE /* CAShapeLayer+WCCAdd.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CAShapeLayer+WCCAdd.m"; sourceTree = "<group>"; };
+		5EDDEA1F207F3C0E008577DE /* AppDelegate+InitViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+InitViewController.h"; sourceTree = "<group>"; };
+		5EDDEA20207F3C0E008577DE /* AppDelegate+InitViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+InitViewController.m"; sourceTree = "<group>"; };
 		E269D7FAD49F57D431A43167 /* Pods-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-demo/Pods-demo.debug.xcconfig"; sourceTree = "<group>"; };
 		E41C2690A4A9FF16D35412E1 /* libPods-demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -111,11 +124,14 @@
 		5ED8417D207DD83600C8D96E /* Category */ = {
 			isa = PBXGroup;
 			children = (
-				5EDDE996207DF7D8008577DE /* UIFont+Font */,
+				5EDDE9BC207F24F3008577DE /* CAShapeLayer */,
+				5EDDE996207DF7D8008577DE /* UIFont */,
 				5EDDE992207DF7C8008577DE /* UIViewController */,
 				5ED8417E207DD83600C8D96E /* NSDictionary */,
 				5ED84181207DD83600C8D96E /* NSObject */,
 				5ED84184207DD83600C8D96E /* UIView */,
+				5EDDE9B6207EFF1B008577DE /* MBProgressHUD */,
+				5EDDEA22207F3C12008577DE /* AppDelegate */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -145,6 +161,8 @@
 				5ED84186207DD83600C8D96E /* UIView+BlurView.m */,
 				5ED84187207DD83600C8D96E /* UIView+POPAnimation.h */,
 				5ED84188207DD83600C8D96E /* UIView+POPAnimation.m */,
+				5EDDE9B9207F0861008577DE /* UIView+TouchEvent.h */,
+				5EDDE9BA207F0861008577DE /* UIView+TouchEvent.m */,
 			);
 			path = UIView;
 			sourceTree = "<group>";
@@ -153,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				5ED8418E207DD85800C8D96E /* Config.pch */,
+				5EDDE9B7207F0001008577DE /* ApplicationMacros.h */,
 			);
 			path = Global;
 			sourceTree = "<group>";
@@ -195,13 +214,40 @@
 			path = UIViewController;
 			sourceTree = "<group>";
 		};
-		5EDDE996207DF7D8008577DE /* UIFont+Font */ = {
+		5EDDE996207DF7D8008577DE /* UIFont */ = {
 			isa = PBXGroup;
 			children = (
 				5EDDE997207DF7D8008577DE /* UIFont+Fonts.h */,
 				5EDDE998207DF7D8008577DE /* UIFont+Fonts.m */,
 			);
-			path = "UIFont+Font";
+			path = UIFont;
+			sourceTree = "<group>";
+		};
+		5EDDE9B6207EFF1B008577DE /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				5EDDE9B3207EFF17008577DE /* MBProgressHUD+Category.h */,
+				5EDDE9B4207EFF17008577DE /* MBProgressHUD+Category.m */,
+			);
+			path = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		5EDDE9BC207F24F3008577DE /* CAShapeLayer */ = {
+			isa = PBXGroup;
+			children = (
+				5EDDE9BD207F2524008577DE /* CAShapeLayer+WCCAdd.h */,
+				5EDDE9BE207F2524008577DE /* CAShapeLayer+WCCAdd.m */,
+			);
+			path = CAShapeLayer;
+			sourceTree = "<group>";
+		};
+		5EDDEA22207F3C12008577DE /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				5EDDEA1F207F3C0E008577DE /* AppDelegate+InitViewController.h */,
+				5EDDEA20207F3C0E008577DE /* AppDelegate+InitViewController.m */,
+			);
+			path = AppDelegate;
 			sourceTree = "<group>";
 		};
 		9D82734117E1643F84ABD0D0 /* Frameworks */ = {
@@ -347,10 +393,14 @@
 				5ED84162207DD5AA00C8D96E /* AppDelegate.m in Sources */,
 				5ED8418A207DD83600C8D96E /* NSObject+GetClassProperty.m in Sources */,
 				5ED84198207DDE7F00C8D96E /* BaseNavigationController.m in Sources */,
+				5EDDE9B5207EFF17008577DE /* MBProgressHUD+Category.m in Sources */,
+				5EDDE9BB207F0861008577DE /* UIView+TouchEvent.m in Sources */,
 				5ED8418C207DD83600C8D96E /* UIView+POPAnimation.m in Sources */,
 				5ED84173207DD5AE00C8D96E /* main.m in Sources */,
 				5ED84189207DD83600C8D96E /* NSDictionary+ADSCategory.m in Sources */,
 				5ED84165207DD5AA00C8D96E /* FirstViewController.m in Sources */,
+				5EDDEA21207F3C0E008577DE /* AppDelegate+InitViewController.m in Sources */,
+				5EDDE9BF207F2524008577DE /* CAShapeLayer+WCCAdd.m in Sources */,
 				5EDDE999207DF7D8008577DE /* UIFont+Fonts.m in Sources */,
 				5ED8418B207DD83600C8D96E /* UIView+BlurView.m in Sources */,
 			);

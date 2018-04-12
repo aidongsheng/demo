@@ -9,6 +9,8 @@
 #ifndef Config_pch
 #define Config_pch
 
+#import "ApplicationMacros.h"
+
 #import "NSObject+GetClassProperty.h"
 #import "UIView+POPAnimation.h"
 #import <QMUIKit.h>
@@ -27,4 +29,10 @@
 #import "UIViewController+DefaultView.h"
 #import <YTKNetwork.h>
 #import <AFNetworking.h>
+#import <MBProgressHUD.h>
+#import "MBProgressHUD+Category.h"
+#import "UIView+TouchEvent.h"
+#import "AppDelegate+InitViewController.h"
+#import "CAShapeLayer+WCCAdd.h"
+
 #endif /* Config_pch */
