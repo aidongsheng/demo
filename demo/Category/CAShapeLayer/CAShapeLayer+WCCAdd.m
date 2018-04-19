@@ -10,18 +10,7 @@
 
 @implementation CAShapeLayer (WCCAdd)
 
-/**
- 生成 CAShapeLayer 类方法
 
- @param shapeType 形状类型枚举
- @param strokeColor 
- @param fillColor <#fillColor description#>
- @param width <#width description#>
- @param strokeStart <#strokeStart description#>
- @param strokeEnd <#strokeEnd description#>
- @param animated <#animated description#>
- @return <#return value description#>
- */
 + (CAShapeLayer *)wcc_layerWithShapeType:(wccLayerShapeType)shapeType
                              strokeColor:(UIColor *)strokeColor
                                fillColor:(UIColor *)fillColor
@@ -86,7 +75,7 @@
 {
     
     UIBezierPath *path = [UIBezierPath bezierPath];
-    [path addArcWithCenter:CGPointMake(DEVICE_WIDTH/2, DEVICE_HEIGHT/2) radius:100 startAngle:0 endAngle:M_PI clockwise:YES];
+    [path addArcWithCenter:CGPointMake(DEVICE_WIDTH/2, DEVICE_HEIGHT/2) radius:200 startAngle:0 endAngle:0 clockwise:YES];
     
     CAShapeLayer *layer = [self baseShapeLayerGeneratorWithStrokeColor:strokeColor fillColor:fillColor strokeStart:strokeStart strokeEnd:strokeEnd lineWidth:width path:path animated:animated];
     layer.lineCap = kCALineCapRound;
@@ -94,60 +83,5 @@
     
     return layer;
 }
-
-//- (CAShapeLayer *)generateLineLayerWithStrokeColor:(UIColor *)strokeColor fillColor:(UIColor *)fillColor lineWidth:(CGFloat)width
-//{
-//    CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-//    UIBezierPath *path = [UIBezierPath bezierPath];
-//    [path moveToPoint:CGPointMake(0, NavigationBarHeight+StatusBarHeight)];
-//    [path addLineToPoint:CGPointMake(DEVICE_WIDTH, DEVICE_HEIGHT - TabBarHeight)];
-//    [path stroke];
-//    [path fill];
-//    [path closePath];
-//    shapeLayer.path = path.CGPath;
-//    shapeLayer.lineWidth = width;
-//    shapeLayer.fillColor = fillColor.CGColor;
-//    shapeLayer.strokeColor = strokeColor.CGColor;
-//    shapeLayer.strokeStart = 0;
-//    shapeLayer.strokeEnd = 1;
-//    return shapeLayer;
-//}
-//
-//- (CAShapeLayer *)generateLineLayerWithStrokeColor:(UIColor *)strokeColor fillColor:(UIColor *)fillColor lineWidth:(CGFloat)width
-//{
-//    CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-//    UIBezierPath *path = [UIBezierPath bezierPath];
-//    [path moveToPoint:CGPointMake(0, NavigationBarHeight+StatusBarHeight)];
-//    [path addLineToPoint:CGPointMake(DEVICE_WIDTH, DEVICE_HEIGHT - TabBarHeight)];
-//    [path stroke];
-//    [path fill];
-//    [path closePath];
-//    shapeLayer.path = path.CGPath;
-//    shapeLayer.lineWidth = width;
-//    shapeLayer.fillColor = fillColor.CGColor;
-//    shapeLayer.strokeColor = strokeColor.CGColor;
-//    shapeLayer.strokeStart = 0;
-//    shapeLayer.strokeEnd = 1;
-//    return shapeLayer;
-//}
-//
-//- (CAShapeLayer *)generateLineLayerWithStrokeColor:(UIColor *)strokeColor fillColor:(UIColor *)fillColor lineWidth:(CGFloat)width
-//{
-//    CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-//    UIBezierPath *path = [UIBezierPath bezierPath];
-//    [path moveToPoint:CGPointMake(0, NavigationBarHeight+StatusBarHeight)];
-//    [path addLineToPoint:CGPointMake(DEVICE_WIDTH, DEVICE_HEIGHT - TabBarHeight)];
-//    [path stroke];
-//    [path fill];
-//    [path closePath];
-//    shapeLayer.path = path.CGPath;
-//    shapeLayer.lineWidth = width;
-//    shapeLayer.fillColor = fillColor.CGColor;
-//    shapeLayer.strokeColor = strokeColor.CGColor;
-//    shapeLayer.strokeStart = 0;
-//    shapeLayer.strokeEnd = 1;
-//    return shapeLayer;
-//}
-
 
 @end

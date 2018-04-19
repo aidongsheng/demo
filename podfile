@@ -15,4 +15,5 @@ target 'demo' do
     pod 'PNChart', :inhibit_warnings => true
     pod 'GPUImage', :inhibit_warnings => true
     pod 'MBProgressHUD', :inhibit_warnings => true
+    pod "PLPlayerKit", :podspec => 'https://raw.githubusercontent.com/pili-engineering/PLPlayerKit/master/PLPlayerKit-Universal.podspec'
 end

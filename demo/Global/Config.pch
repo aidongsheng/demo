@@ -34,5 +34,6 @@
 #import "UIView+TouchEvent.h"
 #import "AppDelegate+InitViewController.h"
 #import "CAShapeLayer+WCCAdd.h"
-
+#import <AVFoundation/AVFoundation.h>
+#import "HTTPHelper.h"
 #endif /* Config_pch */

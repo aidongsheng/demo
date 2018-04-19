@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		47A2CF98EAC97CBFB4182FCA /* libPods-demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E41C2690A4A9FF16D35412E1 /* libPods-demo.a */; };
+		5E0F2A0F208821F40046020F /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A0D208821F40046020F /* VideoPlayerView.m */; };
+		5E0F2A15208823A90046020F /* WCCResourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A14208823A90046020F /* WCCResourceLoader.m */; };
+		5E0F2A18208823CE0046020F /* WCCVideoRequestTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A17208823CE0046020F /* WCCVideoRequestTask.m */; };
+		5E0F2A1B20882BB20046020F /* WCCFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A1A20882BB20046020F /* WCCFileManager.m */; };
+		5EA067882080785600276F5A /* asd.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5EA067872080785600276F5A /* asd.mp4 */; };
+		5EA0678C208092DF00276F5A /* HTTPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA0678B208092DF00276F5A /* HTTPHelper.m */; };
 		5ED84162207DD5AA00C8D96E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84161207DD5AA00C8D96E /* AppDelegate.m */; };
 		5ED84165207DD5AA00C8D96E /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84164207DD5AA00C8D96E /* FirstViewController.m */; };
 		5ED84168207DD5AA00C8D96E /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84167207DD5AA00C8D96E /* SecondViewController.m */; };
@@ -30,6 +36,17 @@
 
 /* Begin PBXFileReference section */
 		5DD23A38F109CAFE85880944 /* Pods-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-demo/Pods-demo.release.xcconfig"; sourceTree = "<group>"; };
+		5E0F2A0B208821F40046020F /* VideoPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
+		5E0F2A0D208821F40046020F /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
+		5E0F2A13208823A90046020F /* WCCResourceLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WCCResourceLoader.h; sourceTree = "<group>"; };
+		5E0F2A14208823A90046020F /* WCCResourceLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WCCResourceLoader.m; sourceTree = "<group>"; };
+		5E0F2A16208823CE0046020F /* WCCVideoRequestTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WCCVideoRequestTask.h; sourceTree = "<group>"; };
+		5E0F2A17208823CE0046020F /* WCCVideoRequestTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WCCVideoRequestTask.m; sourceTree = "<group>"; };
+		5E0F2A1920882BB20046020F /* WCCFileManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WCCFileManager.h; sourceTree = "<group>"; };
+		5E0F2A1A20882BB20046020F /* WCCFileManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WCCFileManager.m; sourceTree = "<group>"; };
+		5EA067872080785600276F5A /* asd.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = asd.mp4; sourceTree = "<group>"; };
+		5EA0678A208092DF00276F5A /* HTTPHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HTTPHelper.h; sourceTree = "<group>"; };
+		5EA0678B208092DF00276F5A /* HTTPHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HTTPHelper.m; sourceTree = "<group>"; };
 		5ED8415D207DD5AA00C8D96E /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ED84160207DD5AA00C8D96E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5ED84161207DD5AA00C8D96E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -84,6 +101,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5E3415FC20804F74008070B2 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				5EA06789208092A900276F5A /* Network */,
+				5E3415FD20804F89008070B2 /* Video */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		5E3415FD20804F89008070B2 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				5E0F2A0B208821F40046020F /* VideoPlayerView.h */,
+				5E0F2A0D208821F40046020F /* VideoPlayerView.m */,
+				5E0F2A13208823A90046020F /* WCCResourceLoader.h */,
+				5E0F2A14208823A90046020F /* WCCResourceLoader.m */,
+				5E0F2A16208823CE0046020F /* WCCVideoRequestTask.h */,
+				5E0F2A17208823CE0046020F /* WCCVideoRequestTask.m */,
+				5E0F2A1920882BB20046020F /* WCCFileManager.h */,
+				5E0F2A1A20882BB20046020F /* WCCFileManager.m */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
+		5EA06789208092A900276F5A /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				5EA0678A208092DF00276F5A /* HTTPHelper.h */,
+				5EA0678B208092DF00276F5A /* HTTPHelper.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		5ED84154207DD5AA00C8D96E = {
 			isa = PBXGroup;
 			children = (
@@ -105,6 +155,7 @@
 		5ED8415F207DD5AA00C8D96E /* demo */ = {
 			isa = PBXGroup;
 			children = (
+				5E3415FC20804F74008070B2 /* Utils */,
 				5ED84199207DE1F100C8D96E /* Resource */,
 				5ED84191207DDA1F00C8D96E /* Controllers */,
 				5ED8418D207DD85800C8D96E /* Global */,
@@ -200,6 +251,7 @@
 		5ED84199207DE1F100C8D96E /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				5EA067872080785600276F5A /* asd.mp4 */,
 				5ED841A8207DEF1200C8D96E /* demo.xcassets */,
 			);
 			name = Resource;
@@ -326,6 +378,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5EA067882080785600276F5A /* asd.mp4 in Resources */,
 				5ED841A9207DEF1200C8D96E /* demo.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -390,11 +443,14 @@
 				5EDDE995207DF7C8008577DE /* UIViewController+DefaultView.m in Sources */,
 				5ED84195207DDA9F00C8D96E /* TabbarViewController.m in Sources */,
 				5EDDE986207DF276008577DE /* BaseViewController.m in Sources */,
+				5E0F2A15208823A90046020F /* WCCResourceLoader.m in Sources */,
 				5ED84162207DD5AA00C8D96E /* AppDelegate.m in Sources */,
 				5ED8418A207DD83600C8D96E /* NSObject+GetClassProperty.m in Sources */,
+				5EA0678C208092DF00276F5A /* HTTPHelper.m in Sources */,
 				5ED84198207DDE7F00C8D96E /* BaseNavigationController.m in Sources */,
 				5EDDE9B5207EFF17008577DE /* MBProgressHUD+Category.m in Sources */,
 				5EDDE9BB207F0861008577DE /* UIView+TouchEvent.m in Sources */,
+				5E0F2A1B20882BB20046020F /* WCCFileManager.m in Sources */,
 				5ED8418C207DD83600C8D96E /* UIView+POPAnimation.m in Sources */,
 				5ED84173207DD5AE00C8D96E /* main.m in Sources */,
 				5ED84189207DD83600C8D96E /* NSDictionary+ADSCategory.m in Sources */,
@@ -403,6 +459,8 @@
 				5EDDE9BF207F2524008577DE /* CAShapeLayer+WCCAdd.m in Sources */,
 				5EDDE999207DF7D8008577DE /* UIFont+Fonts.m in Sources */,
 				5ED8418B207DD83600C8D96E /* UIView+BlurView.m in Sources */,
+				5E0F2A18208823CE0046020F /* WCCVideoRequestTask.m in Sources */,
+				5E0F2A0F208821F40046020F /* VideoPlayerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
