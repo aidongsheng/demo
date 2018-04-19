@@ -27,6 +27,7 @@
 @property (nonatomic,assign) NSUInteger cacheLength;        //  缓存长度
 @property (nonatomic,assign) NSUInteger requestOffset;      //  请求起始位置
 
+- (instancetype)initWithURL:(NSURL *)videoURL;
 /**
  开始请求
  */

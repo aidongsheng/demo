@@ -7,6 +7,8 @@
 //
 
 #import "WCCFileManager.h"
+#import "WCCVideoRequestTask.h"
+
 #import <CommonCrypto/CommonDigest.h>
 
 @implementation WCCFileManager
@@ -30,26 +32,73 @@
 
 + (NSString *)cachedVideoFilePathWithURL:(NSURL *)videoURL
 {
-    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO) lastObject];
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     path = [path stringByAppendingPathComponent:@"video"];
     NSString *strFileNameMD5 = [[NSString stringWithFormat:@"%@",videoURL] MD5String];
     path = [path stringByAppendingPathComponent:strFileNameMD5];
     path = [path stringByAppendingPathExtension:@"mp4"];
+    
     return path;
 }
+
+/**
+ 创建temp目录
+
+ @return 目录
+ */
++ (NSString *)tempVideoFilePath
+{
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    path = [path stringByAppendingPathComponent:@"temp"];
+    return path;
+}
+
+/**
+ 创建temp目录下的临时文件
+
+ @param videoURL 视频链接URL
+ @return 临时文件目录地址
+ */
 + (NSString *)tempVideoFilePathWithURL:(NSURL *)videoURL
 {
-    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO) lastObject];
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     path = [path stringByAppendingPathComponent:@"temp"];
     NSString *strFileNameMD5 = [[NSString stringWithFormat:@"%@",videoURL] MD5String];
-    path = [path stringByAppendingPathComponent:strFileNameMD5];
-    path = [path stringByAppendingPathExtension:@"mp4"];
+    path = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp4",strFileNameMD5]];
     return path;
 }
+
++ (BOOL)createTempFileWithVideoURL:(NSURL *)videoURL
+{
+    NSURL *originalURL = [videoURL originalSchemeURL];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSString *tempFolder = [WCCFileManager tempVideoFilePath];
+    NSString *tempFile = [WCCFileManager tempVideoFilePathWithURL:originalURL];
+    
+    if ([fileManager fileExistsAtPath:tempFile]) {
+        NSError *error;
+        BOOL success = [fileManager removeItemAtPath:tempFile error:&error];
+        if (error || !success) {
+            NSLog(@"清除临时文件 %@ 失败",tempFile);
+        }else{
+            NSLog(@"清除临时文件 %@ 成功",tempFile);
+        }
+    }
+    __block BOOL createFile,createFolder;
+    [[GCDManager shareInstance] asyncExecuteOnSerialQueue:^{
+        createFolder = [fileManager createDirectoryAtPath:tempFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }];
+    [[GCDManager shareInstance] asyncExecuteOnSerialQueue:^{
+        createFile = [fileManager createFileAtPath:tempFile contents:nil attributes:nil];
+    }];
+    return createFile;
+}
+
 + (void)cacheVideoToDiskWithVideoURL:(NSURL *)videoURL
 {
     NSFileManager *fileMgr = [NSFileManager defaultManager];
-    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO) lastObject];
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     path = [path stringByAppendingPathComponent:@"video"];
     if (![fileMgr fileExistsAtPath:path]) {
         NSError *error;
@@ -61,23 +110,18 @@
         }
     }
 }
-
-+ (BOOL)createTempFileWithVideoURL:(NSURL *)videoURL
++ (void)clearTempFolderFiles
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *tempFile = [WCCFileManager tempVideoFilePathWithURL:videoURL];
-    if ([fileManager fileExistsAtPath:tempFile]) {
-        NSError *error;
-        BOOL success = [fileManager removeItemAtPath:tempFile error:&error];
-        if (error || !success) {
-            NSLog(@"清除临时文件 %@ 失败",tempFile);
-        }else{
-            NSLog(@"清除临时文件 %@ 成功",tempFile);
-        }
+    NSFileManager *fileMgr = [NSFileManager defaultManager];
+    NSString *tempPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    tempPath = [tempPath stringByAppendingPathComponent:@"temp"];
+    if ([fileMgr fileExistsAtPath:@"*.mp4"]) {
+        NSLog(@"you'wen'jian");
     }
+    NSDirectoryEnumerator * enumrator = [fileMgr enumeratorAtPath:tempPath];
     
-    return [fileManager createFileAtPath:tempFile contents:nil attributes:nil];
 }
+
 @end
 
 @implementation NSString(add)

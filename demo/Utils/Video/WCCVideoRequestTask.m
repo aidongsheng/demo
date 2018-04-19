@@ -37,10 +37,10 @@
 
 @implementation WCCVideoRequestTask
 
-- (instancetype)init
+- (instancetype)initWithURL:(NSURL *)videoURL
 {
     if (self = [super init]) {
-        
+        [WCCFileManager createTempFileWithVideoURL:videoURL];
     }
     return self;
 }
@@ -62,6 +62,7 @@
     [handle seekToEndOfFile];
     [handle writeData:data];
     self.cacheLength += data.length;
+    
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
@@ -76,6 +77,7 @@
             [WCCFileHandle cacheVideoFile:task.originalRequest.URL];
         }
     }
+    
 }
 
 - (void)start
@@ -93,12 +95,12 @@
     
     [self.task resume];
 }
-- (void)setUrlRequest:(NSURL *)urlRequest
-{
-    _urlRequest = urlRequest;
-    [WCCFileManager createTempFileWithVideoURL:self.urlRequest.absoluteURL];
-    
-}
+//- (void)setUrlRequest:(NSURL *)urlRequest
+//{
+//    _urlRequest = urlRequest;
+//    [WCCFileManager createTempFileWithVideoURL:self.urlRequest.absoluteURL];
+//
+//}
 /**
  取消请求
  */

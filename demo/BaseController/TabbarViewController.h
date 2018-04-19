@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TabbarViewController : QMUITabBarViewController
+@interface TabbarViewController : UITabBarController
 
 @end

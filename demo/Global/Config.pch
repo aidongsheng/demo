@@ -36,4 +36,5 @@
 #import "CAShapeLayer+WCCAdd.h"
 #import <AVFoundation/AVFoundation.h>
 #import "HTTPHelper.h"
+#import "GCDManager.h"
 #endif /* Config_pch */

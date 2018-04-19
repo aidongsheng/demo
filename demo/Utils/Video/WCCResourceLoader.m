@@ -108,7 +108,7 @@
         fileLength = self.requestTask.fileLength;
         [self.requestTask cancel];
     }
-    self.requestTask = [[WCCVideoRequestTask alloc]init];
+    self.requestTask = [[WCCVideoRequestTask alloc]initWithURL:loadingRequest.request.URL];
     self.requestTask.urlRequest = loadingRequest.request.URL;
     self.requestTask.requestOffset = loadingRequest.dataRequest.requestedOffset;
     self.requestTask.cache = cache;

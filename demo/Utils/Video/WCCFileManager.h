@@ -17,9 +17,11 @@
  */
 + (BOOL)checkCachedVideoFileExsitsWithURL:(NSURL *)videoURL;
 + (NSString *)cachedVideoFilePathWithURL:(NSURL *)videoURL;
++ (NSString *)tempVideoFilePath;
 + (NSString *)tempVideoFilePathWithURL:(NSURL *)videoURL;
 + (void)cacheVideoToDiskWithVideoURL:(NSURL *)videoURL;
 + (BOOL)createTempFileWithVideoURL:(NSURL *)videoURL;
++ (void)clearTempFolderFiles;
 @end
 
 @interface NSString(add)
