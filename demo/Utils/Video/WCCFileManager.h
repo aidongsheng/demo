@@ -15,11 +15,11 @@
  @param videoURL 传入的视频 URL
  @return 视频文件的缓存在本地是否存在
  */
-+ (BOOL)checkVideoFileExsitsWithURL:(NSURL *)videoURL;
-
++ (BOOL)checkCachedVideoFileExsitsWithURL:(NSURL *)videoURL;
 + (NSString *)cachedVideoFilePathWithURL:(NSURL *)videoURL;
-
++ (NSString *)tempVideoFilePathWithURL:(NSURL *)videoURL;
 + (void)cacheVideoToDiskWithVideoURL:(NSURL *)videoURL;
++ (BOOL)createTempFileWithVideoURL:(NSURL *)videoURL;
 @end
 
 @interface NSString(add)

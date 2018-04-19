@@ -8,7 +8,7 @@
 
 #import "WCCResourceLoader.h"
 #import "WCCVideoRequestTask.h"
-
+#import "WCCFileHandle.h"
 @interface WCCResourceLoader()
 @property (nonatomic,copy) NSMutableArray *arrRequest;
 @property (nonatomic,strong) WCCVideoRequestTask *requestTask;
@@ -72,7 +72,7 @@
  */
 - (void)resourceLoader:(AVAssetResourceLoader *)resourceLoader didCancelLoadingRequest:(AVAssetResourceLoadingRequest *)loadingRequest
 {
-    [self.arrRequest removeObject:loadingRequest];
+    [self removeLoadingRequest:loadingRequest];
 }
 
 - (void)addLoadingRequest:(AVAssetResourceLoadingRequest *)loadingRequest
@@ -81,9 +81,22 @@
     @synchronized(self){
         if (self.requestTask) {
             //  如果请求任务已存在，执行此处代码
+            if (loadingRequest.dataRequest.requestedOffset >= self.requestTask.requestOffset &&
+                loadingRequest.dataRequest.requestedOffset <= self.requestTask.requestOffset + self.requestTask.cacheLength) {
+                //数据已经缓存，则直接完成
+                NSLog(@"数据已经缓存，则直接完成");
+                [self processRequestList];
+                
+            }else {
+                //数据还没缓存，则等待数据下载；如果是Seek操作，则重新请求
+                if (self.seekRequired) {
+                    NSLog(@"Seek操作，则重新请求");
+                    [self newRequestTaskWithLoadingRequest:loadingRequest cache:NO];
+                }
+            }
         }else{
             //  否则，创建新的请求任务，开启请求
-            
+            [self newRequestTaskWithLoadingRequest:loadingRequest cache:YES];
         }
     }
 }
@@ -102,7 +115,51 @@
     if (fileLength > 0) {
         self.requestTask.fileLength = fileLength;
     }
+    self.seekRequired = NO;
     [self.requestTask start];
 }
 
+- (void)removeLoadingRequest:(AVAssetResourceLoadingRequest *)loadingRequest {
+    [self.arrRequest removeObject:loadingRequest];
+}
+
+- (void)processRequestList {
+    NSMutableArray * finisharrRequest = [NSMutableArray array];
+    for (AVAssetResourceLoadingRequest * loadingRequest in self.arrRequest) {
+        if ([self finishLoadingWithLoadingRequest:loadingRequest]) {
+            [finisharrRequest addObject:loadingRequest];
+        }
+    }
+    [self.arrRequest removeObjectsInArray:finisharrRequest];
+}
+
+- (BOOL)finishLoadingWithLoadingRequest:(AVAssetResourceLoadingRequest *)loadingRequest {
+    //填充信息
+    CFStringRef contentType = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef)(MimeType), NULL);
+    loadingRequest.contentInformationRequest.contentType = CFBridgingRelease(contentType);
+    loadingRequest.contentInformationRequest.byteRangeAccessSupported = YES;
+    loadingRequest.contentInformationRequest.contentLength = self.requestTask.fileLength;
+    
+    //读文件，填充数据
+    NSUInteger cacheLength = self.requestTask.cacheLength;
+    NSUInteger requestedOffset = loadingRequest.dataRequest.requestedOffset;
+    if (loadingRequest.dataRequest.currentOffset != 0) {
+        requestedOffset = loadingRequest.dataRequest.currentOffset;
+    }
+    NSUInteger canReadLength = cacheLength - (requestedOffset - self.requestTask.requestOffset);
+    NSUInteger respondLength = MIN(canReadLength, loadingRequest.dataRequest.requestedLength);
+    
+    //    NSLog(@"cacheLength %ld, requestedOffset %lld, currentOffset %lld, canReadLength %ld, requestedLength %ld", cacheLength, loadingRequest.dataRequest.requestedOffset, loadingRequest.dataRequest.currentOffset,canReadLength, loadingRequest.dataRequest.requestedLength);
+    
+    [loadingRequest.dataRequest respondWithData:[WCCFileHandle readTempFileDataWithOffset:requestedOffset - self.requestTask.requestOffset length:respondLength videoURL:loadingRequest.request.URL]];
+    
+    //如果完全响应了所需要的数据，则完成
+    NSUInteger nowendOffset = requestedOffset + canReadLength;
+    NSUInteger reqEndOffset = loadingRequest.dataRequest.requestedOffset + loadingRequest.dataRequest.requestedLength;
+    if (nowendOffset >= reqEndOffset) {
+        [loadingRequest finishLoading];
+        return YES;
+    }
+    return NO;
+}
 @end

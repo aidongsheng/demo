@@ -17,7 +17,7 @@
 @end
 
 #define url_test_video   @"http://resbj.swochina.com/resource/ad/411521524218.mp4"
-#define url_my_testVideo @"http://192.168.101.106:8000/download/womeiling.mp4"
+#define url_my_testVideo @"http://download.lingyongqian.cn/music/AdagioSostenuto.mp4"
 
 @implementation SecondViewController
 
@@ -26,11 +26,10 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     
-    _videoView = [[VideoPlayerView alloc]initWithVideoURL:[NSURL URLWithString:url_my_testVideo] title:nil];
+    _videoView = [[VideoPlayerView alloc]initWithVideoURL:[NSURL URLWithString:url_test_video] title:nil];
     _videoView.delegate = self;
     _videoView.frame = self.view.bounds;
     [self.view addSubview:_videoView];
-    [_videoView play];
 }
 - (void)viewDidAppear:(BOOL)animated
 {

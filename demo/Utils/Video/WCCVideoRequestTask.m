@@ -10,6 +10,7 @@
 
 #import "WCCVideoRequestTask.h"
 #import "WCCFileManager.h"
+#import "WCCFileHandle.h"
 
 @implementation NSURL(WCCAdd)
 - (NSURL *)customSchemeURL {
@@ -45,12 +46,19 @@
 }
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
 {
-    
+    if (self.isCanceled) return;
+    NSLog(@"response: %@",response);
+    completionHandler(NSURLSessionResponseAllow);
+    NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
+    NSString * contentRange = [[httpResponse allHeaderFields] objectForKey:@"Content-Range"];
+    NSString * fileLength = [[contentRange componentsSeparatedByString:@"/"] lastObject];
+    self.fileLength = fileLength.integerValue > 0 ? fileLength.integerValue : response.expectedContentLength;
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
-    NSFileHandle *handle = [NSFileHandle fileHandleForWritingAtPath:[WCCFileManager cachedVideoFilePathWithURL:dataTask.originalRequest.URL]];
+    NSString *tempFilePath = [WCCFileManager tempVideoFilePathWithURL:dataTask.originalRequest.URL];
+    NSFileHandle *handle = [NSFileHandle fileHandleForWritingAtPath:tempFilePath];
     [handle seekToEndOfFile];
     [handle writeData:data];
     self.cacheLength += data.length;
@@ -62,9 +70,10 @@
         NSLog(@"取消下载");
     }else{
         if (error) {
-            NSLog(@"下载过程出现错误，在此处理错误逻辑");
+            NSLog(@"下载过程出现错误，在此处理错误逻辑,localizedDescription:%@,reason:%@",[error localizedDescription],[error localizedFailureReason]);
         }else{
-            
+            NSLog(@"下载完成");
+            [WCCFileHandle cacheVideoFile:task.originalRequest.URL];
         }
     }
 }
@@ -81,9 +90,15 @@
                                                  delegate:self
                                             delegateQueue:[NSOperationQueue mainQueue]];
     self.task = [self.session dataTaskWithRequest:muRequest];
+    
     [self.task resume];
 }
-
+- (void)setUrlRequest:(NSURL *)urlRequest
+{
+    _urlRequest = urlRequest;
+    [WCCFileManager createTempFileWithVideoURL:self.urlRequest.absoluteURL];
+    
+}
 /**
  取消请求
  */

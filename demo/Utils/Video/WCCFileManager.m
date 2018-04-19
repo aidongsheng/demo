@@ -11,12 +11,13 @@
 
 @implementation WCCFileManager
 
-+ (BOOL)checkVideoFileExsitsWithURL:(NSURL *)videoURL
++ (BOOL)checkCachedVideoFileExsitsWithURL:(NSURL *)videoURL
 {
+    
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    path = [path stringByAppendingPathComponent:@"video"];
     NSString *strVideoURL = [NSString stringWithFormat:@"%@",videoURL];
     NSString *strMD5VideoURL = [strVideoURL md5String];
-    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO) lastObject];
-    path = [path stringByAppendingPathComponent:@"Video"];
     path = [path stringByAppendingPathComponent:strMD5VideoURL];
     path = [path stringByAppendingPathExtension:@"mp4"];
     if ([[NSFileManager defaultManager]fileExistsAtPath:path]) {
@@ -24,12 +25,22 @@
     }else{
         return NO;
     }
+    
 }
 
 + (NSString *)cachedVideoFilePathWithURL:(NSURL *)videoURL
 {
     NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO) lastObject];
-    path = [path stringByAppendingPathComponent:@"Video"];
+    path = [path stringByAppendingPathComponent:@"video"];
+    NSString *strFileNameMD5 = [[NSString stringWithFormat:@"%@",videoURL] MD5String];
+    path = [path stringByAppendingPathComponent:strFileNameMD5];
+    path = [path stringByAppendingPathExtension:@"mp4"];
+    return path;
+}
++ (NSString *)tempVideoFilePathWithURL:(NSURL *)videoURL
+{
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO) lastObject];
+    path = [path stringByAppendingPathComponent:@"temp"];
     NSString *strFileNameMD5 = [[NSString stringWithFormat:@"%@",videoURL] MD5String];
     path = [path stringByAppendingPathComponent:strFileNameMD5];
     path = [path stringByAppendingPathExtension:@"mp4"];
@@ -39,17 +50,33 @@
 {
     NSFileManager *fileMgr = [NSFileManager defaultManager];
     NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO) lastObject];
-    path = [path stringByAppendingPathComponent:@"Video"];
+    path = [path stringByAppendingPathComponent:@"video"];
     if (![fileMgr fileExistsAtPath:path]) {
         NSError *error;
-        [fileMgr createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
-        if (error) {
+        BOOL success = [fileMgr createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
+        if (error && success) {
             NSLog(@"创建视频缓存文件夹失败");
         }else{
             NSLog(@"创建视频缓存文件夹成功");
         }
-        
     }
+}
+
++ (BOOL)createTempFileWithVideoURL:(NSURL *)videoURL
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *tempFile = [WCCFileManager tempVideoFilePathWithURL:videoURL];
+    if ([fileManager fileExistsAtPath:tempFile]) {
+        NSError *error;
+        BOOL success = [fileManager removeItemAtPath:tempFile error:&error];
+        if (error || !success) {
+            NSLog(@"清除临时文件 %@ 失败",tempFile);
+        }else{
+            NSLog(@"清除临时文件 %@ 成功",tempFile);
+        }
+    }
+    
+    return [fileManager createFileAtPath:tempFile contents:nil attributes:nil];
 }
 @end
 

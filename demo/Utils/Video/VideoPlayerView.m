@@ -35,8 +35,8 @@
 - (instancetype)initWithVideoURL:(NSURL *)videoURL title:(NSString *)videoTitle
 {
     if (self = [super init]) {
-        if ([WCCFileManager checkVideoFileExsitsWithURL:videoURL]) {
-            NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@",videoURL]];
+        if ([WCCFileManager checkCachedVideoFileExsitsWithURL:videoURL]) {
+            NSURL *fileURL = [NSURL URLWithString:[WCCFileManager cachedVideoFilePathWithURL:videoURL]];
             self.playerItem = [AVPlayerItem playerItemWithURL:fileURL];
         }else{
             AVURLAsset *urlAsset = [AVURLAsset assetWithURL:[videoURL customSchemeURL]];
@@ -97,6 +97,7 @@
                 break;
             case AVPlayerItemStatusReadyToPlay:
                 NSLog(@"已经准备好播放");
+                [self.player play];
                 break;
             case AVPlayerItemStatusUnknown:
                 NSLog(@"视频资源出现未知错误");

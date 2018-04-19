@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#define MimeType @"video/mp4"
 @interface WCCResourceLoader : NSObject<AVAssetResourceLoaderDelegate>
+@property (atomic, assign) BOOL seekRequired; //Seek标识
 + (WCCResourceLoader *)shareInstance;
 @end
