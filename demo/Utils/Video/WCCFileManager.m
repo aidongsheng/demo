@@ -116,10 +116,8 @@
     NSString *tempPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     tempPath = [tempPath stringByAppendingPathComponent:@"temp"];
     if ([fileMgr fileExistsAtPath:@"*.mp4"]) {
-        NSLog(@"you'wen'jian");
+        
     }
-    NSDirectoryEnumerator * enumrator = [fileMgr enumeratorAtPath:tempPath];
-    
 }
 
 @end

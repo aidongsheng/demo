@@ -24,12 +24,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    
+    self.tabBarController.tabBar.hidden = YES;
     
     _videoView = [[VideoPlayerView alloc]initWithVideoURL:[NSURL URLWithString:url_test_video] title:nil];
     _videoView.delegate = self;
     _videoView.frame = self.view.bounds;
     [self.view addSubview:_videoView];
+    [_videoView play];
 }
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -50,13 +51,14 @@
 {
     NSLog(@"停止播放");
 }
-- (void)didTapedVideoView
+- (void)didTapedVideoViewWithWCCPlayerPlayStatus:(WCCPlayerPlayStatus)status
 {
-    _isTaped = !_isTaped;
-    if (_isTaped) {
-        [_videoView pause];
-    }else{
+    if (status == WCCPlayerPlayStatusStoped) {
         [_videoView play];
+    }else if (status == WCCPlayerPlayStatusPaused) {
+        [_videoView play];
+    }else if (status == WCCPlayerPlayStatusPlaying) {
+        [_videoView pause];
     }
 }
 @end
