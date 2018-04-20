@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @interface WCCFileHandle : NSObject
+@property (nonatomic,assign) BOOL isFileCached;
+
++ (WCCFileHandle *)shareInstance;
 + (BOOL)createTempFileWithVideoURL:(NSURL *)videoURL;
 + (void)cacheVideoFile:(NSURL *)videoURL;
 + (NSData *)readTempFileDataWithOffset:(NSUInteger)offset length:(NSUInteger)length videoURL:(NSURL *)videoURL;

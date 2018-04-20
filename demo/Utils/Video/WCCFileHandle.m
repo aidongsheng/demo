@@ -10,7 +10,15 @@
 #import "WCCFileManager.h"
 
 @implementation WCCFileHandle
-
++ (WCCFileHandle *)shareInstance
+{
+    static WCCFileHandle *instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[WCCFileHandle alloc]init];
+    });
+    return instance;
+}
 + (BOOL)createTempFileWithVideoURL:(NSURL *)videoURL {
     NSFileManager * manager = [NSFileManager defaultManager];
     NSString * path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
@@ -46,7 +54,7 @@
     }else{
         NSLog(@"从 %@ 文件夹移动文件 %@ 至 %@ 文件夹成功",tempPath,[WCCFileHandle fileNameWithVideoURL:videoURL],cachePath);
     }
-    
+    [WCCFileHandle shareInstance].isFileCached = YES;
 }
 
 + (NSString *)fileNameWithVideoURL:(NSURL *)videoURL

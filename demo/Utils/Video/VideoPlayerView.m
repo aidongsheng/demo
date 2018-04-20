@@ -10,7 +10,7 @@
 #import "WCCResourceLoader.h"
 #import "WCCFileManager.h"
 #import "WCCVideoRequestTask.h"
-#import "GCDManager.h"
+#import "WCCFileHandle.h"
 
 @interface VideoPlayerView()
 @property (nonatomic,strong) AVPlayerItem *playerItem;
@@ -40,11 +40,9 @@
 - (instancetype)initWithVideoURL:(NSURL *)videoURL title:(NSString *)videoTitle
 {
     if (self = [super init]) {
-        
         [self setupWithURL:videoURL];
         [self addSubview:self.buttonPlayControl];
         [self addSubview:self.sliderPlay];
-        
     }
     return self;
 }
@@ -70,7 +68,7 @@
             // Fallback on earlier versions
         }
     }
-//    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     [self addObservers];
 }
 
@@ -91,7 +89,7 @@
     [self.playerItem addObserver:self forKeyPath:@"playbackBufferFull" options:NSKeyValueObservingOptionNew context:nil];
     [self.playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
     [self.player addObserver:self forKeyPath:@"rate" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionInitial context:nil];
-
+    [[WCCFileHandle shareInstance] addObserver:self forKeyPath:@"isFileCached" options:NSKeyValueObservingOptionNew context:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinished:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 }
 - (void)removeObservers {
@@ -177,6 +175,12 @@
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
+    if ([object isEqual:[WCCFileHandle shareInstance]] && [keyPath isEqualToString:@"isFileCached"]) {
+        if ([WCCFileHandle shareInstance].isFileCached == YES) {
+            [self setupWithURL:_urlVideoURL];
+        }
+    }
+    
     if ([object isEqual:self.playerItem] && [keyPath isEqualToString:@"loadedTimeRanges"]) {
         NSTimeInterval timeInterval = [self availableDuration];// 计算缓冲进度
         CGFloat totalDuration = CMTimeGetSeconds([self.playerItem duration]);
