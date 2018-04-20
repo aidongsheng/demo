@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, WCCPlayerPlayStatus) {
+    WCCPlayerPlayStatusPlaying,
+    WCCPlayerPlayStatusPaused,
+    WCCPlayerPlayStatusStoped,
+};
+
 @protocol VideoPlayerViewDelegate <NSObject>
 @optional
 /**
@@ -28,7 +34,7 @@
 /**
  视频画面被点击代理方法
  */
-- (void)didTapedVideoView;
+- (void)didTapedVideoViewWithWCCPlayerPlayStatus:(WCCPlayerPlayStatus)status;
 
 - (void)playVideoErrorWithInfomation:(NSString *)errorInfo;
 @end

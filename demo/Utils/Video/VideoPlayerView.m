@@ -10,11 +10,16 @@
 #import "WCCResourceLoader.h"
 #import "WCCFileManager.h"
 #import "WCCVideoRequestTask.h"
+#import "GCDManager.h"
 
 @interface VideoPlayerView()
 @property (nonatomic,strong) AVPlayerItem *playerItem;
 @property (nonatomic,copy)   NSString *videoTitle;
-@property (nonatomic,assign) BOOL isNeedToPlay;
+@property (nonatomic,assign) BOOL isPlaying;                    //  是否正在播放的标志
+@property (nonatomic,strong) UISlider *sliderPlay;              //  播放器进度条
+@property (nonatomic,strong) UIButton *buttonPlayControl;       //  播放、暂停控制按钮
+@property (nonatomic,assign) WCCPlayerPlayStatus playStatus;    //  播放器当前的播放状态
+@property (nonatomic,assign) float videoDuration;               //  视频时长
 @end
 
 @implementation VideoPlayerView
@@ -35,36 +40,115 @@
 - (instancetype)initWithVideoURL:(NSURL *)videoURL title:(NSString *)videoTitle
 {
     if (self = [super init]) {
-        if ([WCCFileManager checkCachedVideoFileExsitsWithURL:videoURL]) {
-            NSURL *fileURL = [NSURL URLWithString:[WCCFileManager cachedVideoFilePathWithURL:videoURL]];
-            self.playerItem = [AVPlayerItem playerItemWithURL:fileURL];
-        }else{
-            AVURLAsset *urlAsset = [AVURLAsset assetWithURL:[videoURL customSchemeURL]];
-            [urlAsset.resourceLoader setDelegate:[WCCResourceLoader shareInstance] queue:dispatch_queue_create("com.wochacha.resourceLoader", NULL)];
-            self.playerItem = [AVPlayerItem playerItemWithAsset:urlAsset];
-        }
-        [self.playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-        [self.playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-        self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+        
+        [self setupWithURL:videoURL];
+        [self addSubview:self.buttonPlayControl];
+        [self addSubview:self.sliderPlay];
+        
     }
     return self;
 }
+- (void)setupWithURL:(NSURL *)videoURL
+{
+    _urlVideoURL = videoURL;
+    _playerItem = nil;
+    self.player = nil;
+    
+    if ([WCCFileManager checkCachedVideoFileExsitsWithURL:videoURL]) {
+        NSURL *fileURL = [NSURL fileURLWithPath:[WCCFileManager cachedVideoFilePathWithURL:videoURL]];
+        NSString *fileString = [NSString stringWithFormat:@"%@",fileURL];
+        fileURL = [NSURL URLWithString:fileString];
+        self.playerItem = [AVPlayerItem playerItemWithURL:fileURL];
+        NSLog(@"%@",fileString);
+    }else{
+        AVURLAsset *urlAsset = [AVURLAsset assetWithURL:[videoURL customSchemeURL]];
+        [urlAsset.resourceLoader setDelegate:[WCCResourceLoader shareInstance] queue:dispatch_queue_create("com.wochacha.resourceLoader", NULL)];
+        self.playerItem = [AVPlayerItem playerItemWithAsset:urlAsset];
+        if (@available(iOS 9.0, *)) {
+            self.playerItem.canUseNetworkResourcesForLiveStreamingWhilePaused = NO;
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+//    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+    [self addObservers];
+}
+
+- (void)addObservers {
+    AVPlayerItem *playItem = self.player.currentItem;
+    __weak __block UISlider *slider = _sliderPlay;
+    [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 30.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+        float current = CMTimeGetSeconds(time);
+        float total = CMTimeGetSeconds([playItem duration]);
+        float progress = current/total;
+        NSLog(@"当前进度:%.1f",progress);
+        [slider setValue:progress animated:YES];
+    }];
+    [self.playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionInitial context:nil];
+    [self.playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionInitial context:nil];
+    [self.playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
+    [self.playerItem addObserver:self forKeyPath:@"playbackBufferFull" options:NSKeyValueObservingOptionNew context:nil];
+    [self.playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
+    [self.player addObserver:self forKeyPath:@"rate" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionInitial context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinished:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+}
+- (void)removeObservers {
+    [self.player removeTimeObserver:self];
+    [self.playerItem removeObserver:self forKeyPath:@"status"];
+    [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [self.player removeObserver:self forKeyPath:@"rate"];
+}
+- (UISlider *)sliderPlay
+{
+    if (_sliderPlay == nil) {
+        _sliderPlay = [[UISlider alloc]init];
+        _sliderPlay.continuous = NO;
+        [_sliderPlay setThumbImage:[UIImage imageNamed:@"slider_thumb_icon"] forState:UIControlStateNormal];
+        _sliderPlay.minimumValue = 0.f;
+        _sliderPlay.maximumValue = 1.0f;
+        [_sliderPlay setMinimumTrackTintColor:[UIColor redColor]];
+        [_sliderPlay setMaximumTrackTintColor:[UIColor lightGrayColor]];
+        [_sliderPlay addTarget:self action:@selector(seekControl:) forControlEvents:UIControlEventValueChanged];
+    }
+    return _sliderPlay;
+}
+- (UIButton *)buttonPlayControl
+{
+    if (_buttonPlayControl == nil) {
+        _buttonPlayControl = [[UIButton alloc]init];
+        [_buttonPlayControl addTarget:self action:@selector(playControl) forControlEvents:UIControlEventTouchUpInside];
+        [_buttonPlayControl setImage:[UIImage imageNamed:@"play_icon"] forState:UIControlStateNormal];
+    }
+    return _buttonPlayControl;
+}
+
+
+
+- (void)playDidFinished:(NSNotification *)note
+{
+    NSLog(@"%@",note.userInfo);
+    [self.player seekToTime:CMTimeMake(0, 1)];
+    _isPlaying = NO;
+    _playStatus = WCCPlayerPlayStatusStoped;
+}
 - (void)play
 {
+    _playStatus = WCCPlayerPlayStatusPlaying;
     [self.player play];
     if (self.delegate && [self.delegate respondsToSelector:@selector(didStartPlayVideo)]) {
         [self.delegate didStartPlayVideo];
     }
-    
 }
 - (void)pause{
-    [self.player pause];
+    _playStatus = WCCPlayerPlayStatusPaused;
+    [self.player setRate:0];
     if (self.delegate && [self.delegate respondsToSelector:@selector(didPausePlayVideo)]) {
         [self.delegate didPausePlayVideo];
     }
 }
 - (void)stop
 {
+    _playStatus = WCCPlayerPlayStatusStoped;
     [self.player seekToTime:CMTimeMakeWithSeconds(0, self.playerItem.currentTime.timescale) completionHandler:^(BOOL finished) {
         NSLog(@"已停止播放");
         [self.player pause];
@@ -72,19 +156,45 @@
             [self.delegate didStopPlayVideo];
         }
     }];
-    
+}
+- (void)seekControl:(UISlider *)slider
+{
+    NSLog(@"%.1f",slider.value);
+    [self.player seekToTime:CMTimeMakeWithSeconds(10, 1)];
+}
+- (void)playControl
+{
+    _isPlaying = !_isPlaying;
+    if (_isPlaying == YES) {
+        [self pause];
+        _playStatus = WCCPlayerPlayStatusPaused;
+    }else{
+        [self play];
+        _playStatus = WCCPlayerPlayStatusPlaying;
+    }
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
     if ([object isEqual:self.playerItem] && [keyPath isEqualToString:@"loadedTimeRanges"]) {
-        
-//        NSLog(@"loadedTimeRanges:%@",self.playerItem.loadedTimeRanges);
-//        NSValue *value = self.playerItem.loadedTimeRanges.firstObject;
-//        NSLog(@"视频总时长约为%@",value);
-//        CMTimeRange range = [value CMTimeRangeValue];
-//
-//        NSLog(@"range's start :%@ duration :%i",range.start,range.duration.value/range.duration.timescale);
+        NSTimeInterval timeInterval = [self availableDuration];// 计算缓冲进度
+        CGFloat totalDuration = CMTimeGetSeconds([self.playerItem duration]);
+        NSLog(@"Time Interval:%f,duration:%.1f",timeInterval,totalDuration);
     }
+    if ([object isEqual:self.playerItem] && [keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
+        if (self.playerItem.isPlaybackLikelyToKeepUp) {
+            NSLog(@"缓存足够播放");
+            [self.player seekToTime:CMTimeMakeWithSeconds(1, 1)];
+        }
+    }
+    if ([object isEqual:self.playerItem] && [keyPath isEqualToString:@"playbackBufferEmpty"]) {
+        if (self.playerItem.isPlaybackBufferEmpty) {
+            NSLog(@"缓存不够播放");
+        }
+    }
+    if ([object isEqual:self.playerItem] && [keyPath isEqualToString:@"playbackBufferFull"]) {
+        [self.player seekToTime:CMTimeMakeWithSeconds(1, 1)];
+    }
+    
     if ([object isEqual:self.playerItem] && [keyPath isEqualToString:@"status"]) {
         NSLog(@"status:%li",self.playerItem.status);
         AVPlayerItemStatus status = [change[NSKeyValueChangeNewKey]intValue];
@@ -97,7 +207,8 @@
                 break;
             case AVPlayerItemStatusReadyToPlay:
                 NSLog(@"已经准备好播放");
-                [self.player play];
+                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setupWithURL:) object:_urlVideoURL];
+                [self play];
                 break;
             case AVPlayerItemStatusUnknown:
                 NSLog(@"视频资源出现未知错误");
@@ -106,6 +217,23 @@
                 break;
         }
     }
+    
+    if ([object isEqual:self.player] && [keyPath isEqualToString:@"rate"]) {
+        if (self.player.rate == 0) {
+            [_buttonPlayControl setImage:[UIImage imageNamed:@"play_icon"] forState:UIControlStateNormal];
+        }else{
+            [_buttonPlayControl setImage:[UIImage imageNamed:@"pause_icon"] forState:UIControlStateNormal];
+        }
+    }
+}
+
+- (NSTimeInterval)availableDuration {
+    NSArray *loadedTimeRanges = [[self.player currentItem] loadedTimeRanges];
+    CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];// 获取缓冲区域
+    float startSeconds = CMTimeGetSeconds(timeRange.start);
+    float durationSeconds = CMTimeGetSeconds(timeRange.duration);
+    NSTimeInterval result = startSeconds + durationSeconds;// 计算缓冲总进度
+    return result;
 }
 
 - (void)jumpToTime:(NSTimeInterval)time withCompletionBlock:(void (^)(BOOL))completionBlock
@@ -117,8 +245,8 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [super touchesBegan:touches withEvent:event];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapedVideoView)]) {
-        [self.delegate didTapedVideoView];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didTapedVideoViewWithWCCPlayerPlayStatus:)]) {
+        [self.delegate didTapedVideoViewWithWCCPlayerPlayStatus:_playStatus];
     }
 }
 
@@ -131,8 +259,26 @@
     CGFloat offsetX = curPoint.x - prePoint.x;
     CGFloat offsetY = curPoint.y - prePoint.y;
     self.transform = CGAffineTransformTranslate(self.transform, offsetX, offsetY);
+    
 }
 
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self.buttonPlayControl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.bottom.mas_equalTo(0);
+        make.width.height.equalTo(@40);
+    }];
+    [self.sliderPlay mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(0);
+        make.bottom.equalTo(self.buttonPlayControl.mas_top).offset(-10);
+        make.height.equalTo(@10);
+    }];
+}
+- (void)dealloc
+{
+    [self removeObservers];
+}
 @end
 

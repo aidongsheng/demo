@@ -17,33 +17,31 @@
 @end
 
 #define url_test_video   @"http://resbj.swochina.com/resource/ad/411521524218.mp4"
-#define url_my_testVideo @"http://download.lingyongqian.cn/music/AdagioSostenuto.mp4"
+#define url_my_testVideo @"http://192.168.101.94:8000/download/womeiling.mp4"
 
 @implementation SecondViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    self.tabBarController.tabBar.hidden = YES;
     
-    
-    _videoView = [[VideoPlayerView alloc]initWithVideoURL:[NSURL URLWithString:url_test_video] title:nil];
+    _videoView = [[VideoPlayerView alloc]initWithVideoURL:[NSURL URLWithString:url_my_testVideo] title:nil];
     _videoView.delegate = self;
     _videoView.frame = self.view.bounds;
     [self.view addSubview:_videoView];
+    [_videoView play];
 }
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
 }
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    
-}
 
 - (void)didStartPlayVideo
 {
     NSLog(@"开始播放");
+    
 }
 - (void)didPausePlayVideo
 {
@@ -53,13 +51,14 @@
 {
     NSLog(@"停止播放");
 }
-- (void)didTapedVideoView
+- (void)didTapedVideoViewWithWCCPlayerPlayStatus:(WCCPlayerPlayStatus)status
 {
-    _isTaped = !_isTaped;
-    if (_isTaped) {
-        [_videoView pause];
-    }else{
+    if (status == WCCPlayerPlayStatusStoped) {
         [_videoView play];
+    }else if (status == WCCPlayerPlayStatusPaused) {
+        [_videoView play];
+    }else if (status == WCCPlayerPlayStatusPlaying) {
+        [_videoView pause];
     }
 }
 @end

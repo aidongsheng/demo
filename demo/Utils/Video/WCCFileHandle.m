@@ -13,7 +13,7 @@
 
 + (BOOL)createTempFileWithVideoURL:(NSURL *)videoURL {
     NSFileManager * manager = [NSFileManager defaultManager];
-    NSString * path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO) lastObject];
+    NSString * path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     path = [path stringByAppendingPathComponent:@"temp"];
     NSString *strVideoURLMD5 = [[NSString stringWithFormat:@"%@",videoURL] MD5String];
     path = [path stringByAppendingPathComponent:strVideoURLMD5];

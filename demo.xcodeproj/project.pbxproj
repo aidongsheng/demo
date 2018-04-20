@@ -13,6 +13,7 @@
 		5E0F2A18208823CE0046020F /* WCCVideoRequestTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A17208823CE0046020F /* WCCVideoRequestTask.m */; };
 		5E0F2A1B20882BB20046020F /* WCCFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A1A20882BB20046020F /* WCCFileManager.m */; };
 		5E0F2A1E208848BC0046020F /* WCCFileHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A1D208848BC0046020F /* WCCFileHandle.m */; };
+		5E0F2A21208898CD0046020F /* GCDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A1F208898CC0046020F /* GCDManager.m */; };
 		5EA067882080785600276F5A /* asd.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5EA067872080785600276F5A /* asd.mp4 */; };
 		5EA0678C208092DF00276F5A /* HTTPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA0678B208092DF00276F5A /* HTTPHelper.m */; };
 		5ED84162207DD5AA00C8D96E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84161207DD5AA00C8D96E /* AppDelegate.m */; };
@@ -47,6 +48,8 @@
 		5E0F2A1A20882BB20046020F /* WCCFileManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WCCFileManager.m; sourceTree = "<group>"; };
 		5E0F2A1C208848BC0046020F /* WCCFileHandle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WCCFileHandle.h; sourceTree = "<group>"; };
 		5E0F2A1D208848BC0046020F /* WCCFileHandle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WCCFileHandle.m; sourceTree = "<group>"; };
+		5E0F2A1F208898CC0046020F /* GCDManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDManager.m; sourceTree = "<group>"; };
+		5E0F2A20208898CD0046020F /* GCDManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDManager.h; sourceTree = "<group>"; };
 		5EA067872080785600276F5A /* asd.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = asd.mp4; sourceTree = "<group>"; };
 		5EA0678A208092DF00276F5A /* HTTPHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HTTPHelper.h; sourceTree = "<group>"; };
 		5EA0678B208092DF00276F5A /* HTTPHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HTTPHelper.m; sourceTree = "<group>"; };
@@ -107,6 +110,8 @@
 		5E3415FC20804F74008070B2 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5E0F2A20208898CD0046020F /* GCDManager.h */,
+				5E0F2A1F208898CC0046020F /* GCDManager.m */,
 				5EA06789208092A900276F5A /* Network */,
 				5E3415FD20804F89008070B2 /* Video */,
 			);
@@ -444,6 +449,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E0F2A21208898CD0046020F /* GCDManager.m in Sources */,
 				5ED84168207DD5AA00C8D96E /* SecondViewController.m in Sources */,
 				5EDDE995207DF7C8008577DE /* UIViewController+DefaultView.m in Sources */,
 				5ED84195207DDA9F00C8D96E /* TabbarViewController.m in Sources */,

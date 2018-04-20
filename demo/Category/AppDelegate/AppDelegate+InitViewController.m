@@ -37,6 +37,7 @@
     
     firstNavi.tabBarItem = item1;
     secondNavi.tabBarItem = item2;
+    [tabbarVC setSelectedIndex:1];
 }
 
 @end
