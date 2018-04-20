@@ -74,6 +74,7 @@
     [self addObservers];
 }
 
+
 - (void)addObservers {
     AVPlayerItem *playItem = self.player.currentItem;
     __weak __block UISlider *slider = _sliderPlay;
@@ -90,6 +91,7 @@
     [self.playerItem addObserver:self forKeyPath:@"playbackBufferFull" options:NSKeyValueObservingOptionNew context:nil];
     [self.playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
     [self.player addObserver:self forKeyPath:@"rate" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionInitial context:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinished:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 }
 - (void)removeObservers {

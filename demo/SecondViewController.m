@@ -17,6 +17,7 @@
 @end
 
 #define url_test_video   @"http://resbj.swochina.com/resource/ad/411521524218.mp4"
+
 #define url_my_testVideo @"http://192.168.101.94:8000/download/womeiling.mp4"
 
 @implementation SecondViewController
