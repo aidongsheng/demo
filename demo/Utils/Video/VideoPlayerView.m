@@ -96,7 +96,12 @@
     [self.player removeTimeObserver:self];
     [self.playerItem removeObserver:self forKeyPath:@"status"];
     [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+    [self.playerItem removeObserver:self forKeyPath:@"playbackBufferFull"];
+    [self.playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
     [self.player removeObserver:self forKeyPath:@"rate"];
+    [[WCCFileHandle shareInstance] removeObserver:self forKeyPath:@"isFileCached"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 }
 - (UISlider *)sliderPlay
 {
