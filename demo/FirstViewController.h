@@ -8,6 +8,7 @@
 
 @interface FirstViewController : QMUICommonViewController
 
+- (void)pop_animationDidStop:(POPAnimation *)anim finished:(BOOL)finished;
 
 @end
 

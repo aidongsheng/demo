@@ -8,6 +8,7 @@
 
 #import "FirstViewController.h"
 #import "CAShapeLayer+WCCAdd.h"
+#import "MainModel.h"
 
 @interface FirstViewController ()<POPAnimationDelegate>
 @property (nonatomic,strong) CAShapeLayer *pie;
@@ -21,6 +22,7 @@ BOOL flag;
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self showLoadingView];
+    DLog(@"app version %@ %@",[MainModel shareObject].strAppVersion,[MainModel shareObject].strDeviceModel);
 }
 
 - (void)pop_animationDidStop:(POPAnimation *)anim finished:(BOOL)finished
@@ -31,11 +33,5 @@ BOOL flag;
 {
     [super touchesBegan:touches withEvent:event];
     
-    flag = !flag;
-    if (flag) {
-        [self showNetworkErrorView];
-    }else{
-        [self hideNetworkErrorView];
-    }
 }
 @end

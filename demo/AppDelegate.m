@@ -16,8 +16,15 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [Bugly startWithAppId:@"2a345f1afa"];
+    BuglyConfig *config = [[BuglyConfig alloc]init];
+    config.debugMode = YES;
+    config.channel = @"appstore";
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
     //  初始化控制器
     [self initViewControllers];
+    
     return YES;
 }
 

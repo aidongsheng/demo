@@ -18,11 +18,14 @@
 {
     TabbarViewController *tabbarVC = [[TabbarViewController alloc]init];
     FirstViewController *firstVC = [[FirstViewController alloc]init];
+    firstVC.view.backgroundColor = [UIColor qmui_randomColor];
     BaseNavigationController * firstNavi = [[BaseNavigationController alloc]initWithRootViewController:firstVC];
     SecondViewController *secondVC = [[SecondViewController alloc]init];
+    secondVC.view.backgroundColor = [UIColor qmui_randomColor];
     BaseNavigationController * secondNavi = [[BaseNavigationController alloc]initWithRootViewController:secondVC];
     [tabbarVC setViewControllers:@[firstNavi,secondNavi]];
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor = [UIColor qmui_randomColor];
     self.window.rootViewController = tabbarVC;
     [self.window makeKeyAndVisible];
     
@@ -38,6 +41,8 @@
     firstNavi.tabBarItem = item1;
     secondNavi.tabBarItem = item2;
     [tabbarVC setSelectedIndex:1];
+    
+    
 }
 
 @end

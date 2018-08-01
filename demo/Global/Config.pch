@@ -9,6 +9,7 @@
 #ifndef Config_pch
 #define Config_pch
 
+
 #import "ApplicationMacros.h"
 
 #import "NSObject+GetClassProperty.h"
@@ -20,7 +21,6 @@
 #import <POP.h>
 #import <PNChart.h>
 #import "UIView+BlurView.h"
-#import <GPUImage.h>
 #import <FBShimmering.h>
 #import <FBShimmeringView.h>
 #import <FBShimmeringLayer.h>
@@ -37,4 +37,5 @@
 #import <AVFoundation/AVFoundation.h>
 #import "HTTPHelper.h"
 #import "GCDManager.h"
+#import <Bugly/Bugly.h>
 #endif /* Config_pch */

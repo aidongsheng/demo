@@ -13,7 +13,10 @@ target 'demo' do
     pod 'MQTTClient', :inhibit_warnings => true
     pod 'CocoaAsyncSocket', :inhibit_warnings => true
     pod 'PNChart', :inhibit_warnings => true
-    pod 'GPUImage', :inhibit_warnings => true
+#    pod 'GPUImage', :inhibit_warnings => true
     pod 'MBProgressHUD', :inhibit_warnings => true
-    pod "PLPlayerKit", :podspec => 'https://raw.githubusercontent.com/pili-engineering/PLPlayerKit/master/PLPlayerKit-Universal.podspec'
+    pod 'DOUAudioStreamer'
+    pod 'CocoaLumberjack'
+    pod 'Reachability'
+    pod 'Bugly'
 end
