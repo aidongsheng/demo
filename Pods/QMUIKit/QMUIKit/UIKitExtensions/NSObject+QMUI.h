@@ -7,17 +7,27 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <objc/runtime.h>
 
 @interface NSObject (QMUI)
 
 /**
  判断当前类是否有重写某个父类的指定方法
-
+ 
  @param selector 要判断的方法
  @param superclass 要比较的父类，必须是当前类的某个 superclass
  @return YES 表示子类有重写了父类方法，NO 表示没有重写（异常情况也返回 NO，例如当前类与指定的类并非父子关系、父类本身也无法响应指定的方法）
  */
 - (BOOL)qmui_hasOverrideMethod:(SEL)selector ofSuperclass:(Class)superclass;
+
+/**
+ 判断指定的类是否有重写某个父类的指定方法
+ 
+ @param selector 要判断的方法
+ @param superclass 要比较的父类，必须是当前类的某个 superclass
+ @return YES 表示子类有重写了父类方法，NO 表示没有重写（异常情况也返回 NO，例如当前类与指定的类并非父子关系、父类本身也无法响应指定的方法）
+ */
++ (BOOL)qmui_hasOverrideMethod:(SEL)selector forClass:(Class)aClass ofSuperclass:(Class)superclass;
 
 /**
  对 super 发送消息
@@ -73,6 +83,22 @@
  *  @param firstArgument 调用 selector 时要传的第一个参数的指针地址
  */
 - (void)qmui_performSelector:(SEL)selector withReturnValue:(void *)returnValue arguments:(void *)firstArgument, ...;
+
+
+/**
+ 使用 block 遍历当前实例的所有成员变量（也即 _xxx 那种）
+
+ @param block 用于遍历的 block
+ */
+- (void)qmui_enumrateIvarsUsingBlock:(void (^)(Ivar ivar, NSString *ivarName))block;
+
+/**
+ 使用 block 遍历指定 class 的所有成员变量（也即 _xxx 那种）
+
+ @param aClass 指定的 class
+ @param block  用于遍历的 block
+ */
++ (void)qmui_enumrateIvarsOfClass:(Class)aClass usingBlock:(void (^)(Ivar ivar, NSString *ivarName))block;
 
 /**
  使用 block 遍历当前实例的所有方法，父类的方法不包含在内

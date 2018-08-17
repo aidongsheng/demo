@@ -11,6 +11,7 @@
 #import "UIView+QMUI.h"
 #import "CALayer+QMUI.h"
 #import "UIButton+QMUI.h"
+#import "NSArray+QMUI.h"
 #import "QMUICore.h"
 
 @interface QMUIPopupMenuItem ()
@@ -32,13 +33,32 @@
 @implementation QMUIPopupMenuView
 
 - (void)setItems:(NSArray<QMUIPopupMenuItem *> *)items {
+    [_items enumerateObjectsUsingBlock:^(QMUIPopupMenuItem * _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
+        item.menuView = nil;
+    }];
     _items = items;
     self.itemSections = @[_items];
 }
 
 - (void)setItemSections:(NSArray<NSArray<QMUIPopupMenuItem *> *> *)itemSections {
+    [_itemSections qmui_enumerateNestedArrayWithBlock:^(QMUIPopupMenuItem *item, BOOL *stop) {
+        item.menuView = nil;
+    }];
     _itemSections = itemSections;
     [self configureItems];
+}
+
+- (void)setItemConfigurationHandler:(void (^)(QMUIPopupMenuView *, QMUIPopupMenuItem *, NSInteger, NSInteger))itemConfigurationHandler {
+    _itemConfigurationHandler = [itemConfigurationHandler copy];
+    if (_itemConfigurationHandler && self.itemSections.count) {
+        for (NSInteger section = 0, sectionCount = self.itemSections.count; section < sectionCount; section ++) {
+            NSArray<QMUIPopupMenuItem *> *items = self.itemSections[section];
+            for (NSInteger row = 0, rowCount = items.count; row < rowCount; row ++) {
+                QMUIPopupMenuItem *item = items[row];
+                _itemConfigurationHandler(self, item, section, row);
+            }
+        }
+    }
 }
 
 - (BOOL)shouldShowSeparatorAtRow:(NSInteger)row rowCount:(NSInteger)rowCount inSection:(NSInteger)section sectionCount:(NSInteger)sectionCount {
@@ -59,6 +79,10 @@
             item.button.highlightedBackgroundColor = self.itemHighlightedBackgroundColor;
             item.button.imageEdgeInsets = UIEdgeInsetsMake(0, -self.imageMarginRight, 0, self.imageMarginRight);
             item.button.contentEdgeInsets = UIEdgeInsetsMake(0, self.padding.left - item.button.imageEdgeInsets.left, 0, self.padding.right);
+            item.menuView = self;
+            if (self.itemConfigurationHandler) {
+                self.itemConfigurationHandler(self, item, section, row);
+            }
             [self.scrollView addSubview:item.button];
             
             // 配置分隔线，注意每一个 section 里的最后一行是不显示分隔线的
@@ -86,14 +110,17 @@
 
 #pragma mark - (UISubclassingHooks)
 
-- (void)didInitialized {
-    [super didInitialized];
+- (void)didInitialize {
+    [super didInitialize];
     self.contentEdgeInsets = UIEdgeInsetsZero;
     
     self.scrollView = [[UIScrollView alloc] init];
     self.scrollView.scrollsToTop = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.showsVerticalScrollIndicator = NO;
+    if (@available(iOS 11, *)) {
+        self.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
     [self.contentView addSubview:self.scrollView];
     
     self.itemSeparatorLayers = [[NSMutableArray alloc] init];
@@ -172,7 +199,7 @@
 
 @implementation QMUIPopupMenuItem
 
-+ (instancetype)itemWithImage:(UIImage *)image title:(NSString *)title handler:(void (^)(void))handler {
++ (instancetype)itemWithImage:(UIImage *)image title:(NSString *)title handler:(void (^)(QMUIPopupMenuView *, QMUIPopupMenuItem *))handler {
     QMUIPopupMenuItem *item = [[QMUIPopupMenuItem alloc] init];
     item.image = image;
     item.title = title;
@@ -198,7 +225,7 @@
 
 - (void)handleButtonEvent:(id)sender {
     if (self.handler) {
-        self.handler();
+        self.handler(self.menuView, self);
     }
 }
 

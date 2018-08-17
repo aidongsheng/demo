@@ -14,7 +14,7 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        ReplaceMethod([self class], @selector(description), @selector(qmui_description));
+        ExchangeImplementations([self class], @selector(description), @selector(qmui_description));
     });
 }
 
@@ -23,10 +23,6 @@
 }
 
 - (BOOL)qmui_alreadyAtTop {
-    if (!self.qmui_canScroll) {
-        return YES;
-    }
-    
     if (self.contentOffset.y == -self.qmui_contentInset.top) {
         return YES;
     }

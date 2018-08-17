@@ -9,7 +9,6 @@
 #import "QMUILogger.h"
 #import "QMUILogNameManager.h"
 #import "QMUILogItem.h"
-#import "QMUICore.h"
 
 @implementation QMUILogger
 
@@ -37,11 +36,6 @@
     // 禁用了某个 name 则直接退出
     if (!logItem.enabled) return;
     
-    // 不同级别的 log 可通过配置表的开关来控制是否要输出
-    if (logItem.level == QMUILogLevelDefault && !ShouldPrintDefaultLog) return;
-    if (logItem.level == QMUILogLevelInfo && !ShouldPrintInfoLog) return;
-    if (logItem.level == QMUILogLevelWarn && !ShouldPrintWarnLog) return;
-    
     NSString *fileString = [NSString stringWithFormat:@"%s", file];
     NSString *funcString = [NSString stringWithFormat:@"%s", func];
     NSString *defaultString = [NSString stringWithFormat:@"%@:%@ | %@", funcString, @(line), logItem];
@@ -49,7 +43,13 @@
     if ([self.delegate respondsToSelector:@selector(printQMUILogWithFile:line:func:logItem:defaultString:)]) {
         [self.delegate printQMUILogWithFile:fileString line:line func:funcString logItem:logItem defaultString:defaultString];
     } else {
-        NSLog(@"%@", defaultString);
+//        // iOS 11 之前用替换方法的方式替换了 NSLog，所以这里就不能继续使用 NSLog 了
+//        if (IS_DEBUG && IOS_VERSION_NUMBER < 110000) {
+//            NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
+//            puts([defaultString cStringUsingEncoding:enc]);
+//        } else {
+            NSLog(@"%@", defaultString);
+//        }
     }
 }
 

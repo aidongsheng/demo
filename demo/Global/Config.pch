@@ -38,4 +38,9 @@
 #import "HTTPHelper.h"
 #import "GCDManager.h"
 #import <Bugly/Bugly.h>
+#import "BaseTableViewCell.h"
+#import "UrlHelper.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 #endif /* Config_pch */

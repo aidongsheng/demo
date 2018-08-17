@@ -14,6 +14,7 @@
 #import "QMUIZoomImageView.h"
 #import "QMUIAsset.h"
 #import "QMUIButton.h"
+#import "QMUINavigationButton.h"
 #import "QMUIImagePickerHelper.h"
 #import "QMUIPieProgressView.h"
 #import "QMUIAlertController.h"
@@ -77,16 +78,15 @@ static QMUIImagePickerPreviewViewController *imagePickerPreviewViewControllerApp
     self.topToolBarView.tintColor = self.toolBarTintColor;
     [self.view addSubview:self.topToolBarView];
     
-    _backButton = [[QMUIButton alloc] init];
-    self.backButton.adjustsImageTintColorAutomatically = YES;
-    [self.backButton setImage:NavBarBackIndicatorImage forState:UIControlStateNormal];
-    self.backButton.tintColor = self.topToolBarView.tintColor;
+    _backButton = [[QMUINavigationButton alloc] initWithType:QMUINavigationButtonTypeBack];
     [self.backButton sizeToFit];
     [self.backButton addTarget:self action:@selector(handleCancelPreviewImage:) forControlEvents:UIControlEventTouchUpInside];
     self.backButton.qmui_outsideEdge = UIEdgeInsetsMake(-30, -20, -50, -80);
     [self.topToolBarView addSubview:self.backButton];
     
     _checkboxButton = [[QMUIButton alloc] init];
+    self.checkboxButton.adjustsTitleTintColorAutomatically = YES;
+    self.checkboxButton.adjustsImageTintColorAutomatically = YES;
     UIImage *checkboxImage = [QMUIHelper imageWithName:@"QMUI_previewImage_checkbox"];
     UIImage *checkedCheckboxImage = [QMUIHelper imageWithName:@"QMUI_previewImage_checkbox_checked"];
     [self.checkboxButton setImage:checkboxImage forState:UIControlStateNormal];
@@ -103,7 +103,7 @@ static QMUIImagePickerPreviewViewController *imagePickerPreviewViewControllerApp
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     if (!_singleCheckMode) {
-        QMUIAsset *imageAsset = [self.imagesAssetArray objectAtIndex:self.imagePreviewView.currentImageIndex];
+        QMUIAsset *imageAsset = self.imagesAssetArray[self.imagePreviewView.currentImageIndex];
         self.checkboxButton.selected = [self.selectedImageAssetArray containsObject:imageAsset];
     }
 }
@@ -119,10 +119,14 @@ static QMUIImagePickerPreviewViewController *imagePickerPreviewViewControllerApp
     self.topToolBarView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), TopToolBarViewHeight);
     CGFloat topToolbarPaddingTop = IPhoneXSafeAreaInsets.top;
     CGFloat topToolbarContentHeight = CGRectGetHeight(self.topToolBarView.bounds) - topToolbarPaddingTop;
-    self.backButton.frame = CGRectSetXY(self.backButton.frame, 8, topToolbarPaddingTop + CGFloatGetCenter(topToolbarContentHeight, CGRectGetHeight(self.backButton.frame)));
+    self.backButton.frame = CGRectSetXY(self.backButton.frame, 16, topToolbarPaddingTop + CGFloatGetCenter(topToolbarContentHeight, CGRectGetHeight(self.backButton.frame)));
     if (!self.checkboxButton.hidden) {
         self.checkboxButton.frame = CGRectSetXY(self.checkboxButton.frame, CGRectGetWidth(self.topToolBarView.frame) - 10 - CGRectGetWidth(self.checkboxButton.frame), topToolbarPaddingTop + CGFloatGetCenter(topToolbarContentHeight, CGRectGetHeight(self.checkboxButton.frame)));
     }
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 - (void)setToolBarBackgroundColor:(UIColor *)toolBarBackgroundColor {
@@ -133,8 +137,6 @@ static QMUIImagePickerPreviewViewController *imagePickerPreviewViewControllerApp
 - (void)setToolBarTintColor:(UIColor *)toolBarTintColor {
     _toolBarTintColor = toolBarTintColor;
     self.topToolBarView.tintColor = toolBarTintColor;
-    self.backButton.tintColor = toolBarTintColor;
-    self.checkboxButton.tintColor = toolBarTintColor;
 }
 
 - (void)setDownloadStatus:(QMUIAssetDownloadStatus)downloadStatus {
@@ -185,7 +187,7 @@ static QMUIImagePickerPreviewViewController *imagePickerPreviewViewControllerApp
 
 - (void)imagePreviewView:(QMUIImagePreviewView *)imagePreviewView willScrollHalfToIndex:(NSUInteger)index {
     if (!_singleCheckMode) {
-        QMUIAsset *imageAsset = [self.imagesAssetArray objectAtIndex:index];
+        QMUIAsset *imageAsset = self.imagesAssetArray[index];
         self.checkboxButton.selected = [self.selectedImageAssetArray containsObject:imageAsset];
     }
 }
@@ -208,7 +210,11 @@ static QMUIImagePickerPreviewViewController *imagePickerPreviewViewControllerApp
 #pragma mark - 按钮点击回调
 
 - (void)handleCancelPreviewImage:(QMUIButton *)button {
-    [self.navigationController popViewControllerAnimated:YES];
+    if (self.navigationController) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [self exitPreviewAutomatically];
+    }
     if (self.delegate && [self.delegate respondsToSelector:@selector(imagePickerPreviewViewControllerDidCancel:)]) {
         [self.delegate imagePickerPreviewViewControllerDidCancel:self];
     }
@@ -223,8 +229,8 @@ static QMUIImagePickerPreviewViewController *imagePickerPreviewViewControllerApp
         }
         
         button.selected = NO;
-        QMUIAsset *imageAsset = [self.imagesAssetArray objectAtIndex:self.imagePreviewView.currentImageIndex];
-        [QMUIImagePickerHelper imageAssetArray:self.selectedImageAssetArray removeImageAsset:imageAsset];
+        QMUIAsset *imageAsset = self.imagesAssetArray[self.imagePreviewView.currentImageIndex];
+        [self.selectedImageAssetArray removeObject:imageAsset];
         
         if ([self.delegate respondsToSelector:@selector(imagePickerPreviewViewController:didUncheckImageAtIndex:)]) {
             [self.delegate imagePickerPreviewViewController:self didUncheckImageAtIndex:self.imagePreviewView.currentImageIndex];
@@ -363,7 +369,7 @@ static QMUIImagePickerPreviewViewController *imagePickerPreviewViewControllerApp
             }];
         } else {
             imageView.tag = -1;
-            imageAsset.requestID = [imageAsset requestPreviewImageWithCompletion:^void(UIImage *result, NSDictionary *info) {
+            imageAsset.requestID = [imageAsset requestOriginImageWithCompletion:^void(UIImage *result, NSDictionary *info) {
                 // 这里可能因为 imageView 复用，导致前面的请求得到的结果显示到别的 imageView 上，
                 // 因此判断如果是新请求（无复用问题）或者是当前的请求才把获得的图片结果展示出来
                 dispatch_async(dispatch_get_main_queue(), ^{

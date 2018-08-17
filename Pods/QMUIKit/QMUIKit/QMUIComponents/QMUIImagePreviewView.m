@@ -36,7 +36,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.zoomImageView.frame = self.contentView.bounds;
+    self.zoomImageView.frame = CGRectApplyAffineTransform(self.contentView.bounds, self.zoomImageView.transform);
 }
 
 @end
@@ -119,7 +119,7 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
     if (currentImageIndex < [self.collectionView numberOfItemsInSection:0]) {
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:currentImageIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:animated];
     } else {
-        QMUILog(@"QMUIImagePreviewView", @"dataSource 里的图片数量和当前显示出来的图片数量不匹配, collectionView.numberOfItems = %@, collectionViewDataSource.numberOfItems = %@, currentImageIndex = %@", @([self.collectionView numberOfItemsInSection:0]), @([self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView]), @(_currentImageIndex));
+        QMUILog(@"QMUIImagePreviewView", @"dataSource 里的图片数量和当前显示出来的图片数量不匹配, collectionView.numberOfItems = %@, collectionViewDataSource.numberOfItems = %@, currentImageIndex = %@", @([self.collectionView numberOfItemsInSection:0]), @([self.collectionView.dataSource collectionView:self.collectionView numberOfItemsInSection:1]), @(_currentImageIndex));
     }
 }
 
@@ -239,7 +239,7 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
     } else {
         NSAssert(NO, @"尝试通过 %s 获取 QMUIZoomImageView 所在的 index，但找不到 QMUIZoomImageView 所在的 cell，index 获取失败。%@", __func__, zoomImageView);
     }
-    return NSUIntegerMax;
+    return NSNotFound;
 }
 
 - (QMUIZoomImageView *)zoomImageViewAtIndex:(NSUInteger)index {
@@ -300,14 +300,6 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
         return [self.delegate enabledZoomViewInZoomImageView:imageView];
     }
     return YES;
-}
-
-- (UIEdgeInsets)contentInsetsForVideoToolbar:(QMUIZoomImageViewVideoToolbar *)toolbar inZoomingImageView:(QMUIZoomImageView *)zoomImageView {
-    [self checkIfDelegateMissing];
-    if ([self.delegate respondsToSelector:_cmd]) {
-        return [self.delegate contentInsetsForVideoToolbar:toolbar inZoomingImageView:zoomImageView];
-    }
-    return toolbar.contentInsets;
 }
 
 @end

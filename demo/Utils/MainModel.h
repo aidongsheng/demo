@@ -12,5 +12,17 @@
 @property (nonatomic, strong) NSString * strAppVersion;
 @property (nonatomic, strong) NSString * strBuild;
 @property (nonatomic, strong) NSString * strDeviceModel;
+@property (nonatomic, strong) NSString * strAppName;
+@property (nonatomic, strong) NSString * strBundleIdentifier;
+@property (nonatomic ,strong) NSString * strPlatformVersion;
+@property (nonatomic ,strong) NSString * strSDKName;
+@property (nonatomic ,strong) NSString * strMinimumOSVersion;
+@property (nonatomic ,strong) NSString * strAllowATS;
+@property (nonatomic ,strong) NSDictionary * dicStatusBarTint;
+@property (nonatomic, strong) NSArray *arrSupportedOrientations;
+@property (nonatomic, strong) NSString * strCompiler;
+@property (nonatomic, strong) NSString * strMachineOSBuild;
+@property (nonatomic, strong) NSString * strDevelopmentRegion;
+
 + (MainModel *)shareObject;
 @end

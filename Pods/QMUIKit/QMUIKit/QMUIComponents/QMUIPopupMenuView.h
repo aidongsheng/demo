@@ -35,6 +35,9 @@
 @property(nonatomic, assign) CGFloat imageMarginRight UI_APPEARANCE_SELECTOR;
 @property(nonatomic, assign) UIEdgeInsets separatorInset UI_APPEARANCE_SELECTOR;
 
+/// 批量设置 item 的样式
+@property(nonatomic, copy) void (^itemConfigurationHandler)(QMUIPopupMenuView *aMenuView, QMUIPopupMenuItem *aItem, NSInteger section, NSInteger index);
+
 @property(nonatomic, copy) NSArray<QMUIPopupMenuItem *> *items;
 @property(nonatomic, copy) NSArray<NSArray<QMUIPopupMenuItem *> *> *itemSections;
 
@@ -50,7 +53,8 @@
 @property(nonatomic, strong) UIImage *image;
 @property(nonatomic, copy) NSString *title;
 @property(nonatomic, strong, readonly) QMUIButton *button;
-@property(nonatomic, copy) void (^handler)(void);
+@property(nonatomic, copy) void (^handler)(QMUIPopupMenuView *aMenuView, QMUIPopupMenuItem *aItem);
+@property(nonatomic, weak) QMUIPopupMenuView *menuView;
 
-+ (instancetype)itemWithImage:(UIImage *)image title:(NSString *)title handler:(void (^)(void))handler;
++ (instancetype)itemWithImage:(UIImage *)image title:(NSString *)title handler:(void (^)(QMUIPopupMenuView *aMenuView, QMUIPopupMenuItem *aItem))handler;
 @end

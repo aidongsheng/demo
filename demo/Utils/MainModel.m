@@ -47,4 +47,52 @@ static MainModel * instance;
 {
     return [UIDevice currentDevice].model;
 }
+- (NSString *)strAppName
+{
+    return [[self bundleInfoDictionary] objectForKey:@"CFBundleName"];
+}
+- (NSString *)strBundleIdentifier
+{
+    return [[self bundleInfoDictionary] objectForKey:@"CFBundleIdentifier"];
+}
+
+- (NSString *)strPlatformVersion
+{
+    return [[self bundleInfoDictionary] objectForKey:@"DTPlatformVersion"];
+}
+- (NSString *)strSDKName
+{
+    return [[self bundleInfoDictionary] objectForKey:@"DTSDKName"];
+}
+- (NSString *)strMinimumOSVersion
+{
+    return [[self bundleInfoDictionary] objectForKey:@"MinimumOSVersion"];
+}
+- (NSString *)strAllowATS
+{
+    NSDictionary *dicATS = [[self bundleInfoDictionary] objectForKey:@"NSAppTransportSecurity"];
+    return [NSString stringWithFormat:@"%@",[dicATS objectForKey:@"NSAllowsArbitraryLoads"]];
+}
+- (NSDictionary *)dicStatusBarTint
+{
+    return [[self bundleInfoDictionary] objectForKey:@"UIStatusBarTintParameters"];
+}
+
+- (NSArray *)arrSupportedOrientations
+{
+    return [[self bundleInfoDictionary] objectForKey:@"UISupportedInterfaceOrientations"];
+}
+- (NSString *)strCompiler
+{
+    return [[self bundleInfoDictionary] objectForKey:@"DTCompiler"];
+}
+- (NSString *)strMachineOSBuild
+{
+    return [[self bundleInfoDictionary] objectForKey:@"BuildMachineOSBuild"];
+}
+- (NSString *)strDevelopmentRegion
+{
+    return [[self bundleInfoDictionary] objectForKey:@"CFBundleDevelopmentRegion"];
+}
+
 @end

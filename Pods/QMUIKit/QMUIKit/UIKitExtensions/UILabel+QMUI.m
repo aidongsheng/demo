@@ -10,14 +10,15 @@
 #import "QMUICore.h"
 #import "NSParagraphStyle+QMUI.h"
 #import "NSObject+QMUI.h"
+#import "NSNumber+QMUI.h"
 
 @implementation UILabel (QMUI)
 
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        ReplaceMethod([self class], @selector(setText:), @selector(qmui_setText:));
-        ReplaceMethod([self class], @selector(setAttributedText:), @selector(qmui_setAttributedText:));
+        ExchangeImplementations([self class], @selector(setText:), @selector(qmui_setText:));
+        ExchangeImplementations([self class], @selector(setAttributedText:), @selector(qmui_setAttributedText:));
     });
 }
 
@@ -148,7 +149,7 @@ static char kAssociatedObjectKey_lineHeight;
 }
 
 - (CGFloat)qmui_lineHeight {
-    return [objc_getAssociatedObject(self, &kAssociatedObjectKey_lineHeight) floatValue];
+    return [(NSNumber *)objc_getAssociatedObject(self, &kAssociatedObjectKey_lineHeight) qmui_CGFloatValue];
 }
 
 - (instancetype)qmui_initWithFont:(UIFont *)font textColor:(UIColor *)textColor {

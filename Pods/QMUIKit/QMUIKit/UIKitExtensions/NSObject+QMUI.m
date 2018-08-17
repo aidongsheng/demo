@@ -8,12 +8,15 @@
 
 #import "NSObject+QMUI.h"
 #import <objc/message.h>
-#import <objc/runtime.h>
 
 @implementation NSObject (QMUI)
 
 - (BOOL)qmui_hasOverrideMethod:(SEL)selector ofSuperclass:(Class)superclass {
-    if (![[self class] isSubclassOfClass:superclass]) {
+    return [NSObject qmui_hasOverrideMethod:selector forClass:self.class ofSuperclass:superclass];
+}
+
++ (BOOL)qmui_hasOverrideMethod:(SEL)selector forClass:(Class)aClass ofSuperclass:(Class)superclass {
+    if (![aClass isSubclassOfClass:superclass]) {
         return NO;
     }
     
@@ -22,7 +25,7 @@
     }
     
     Method superclassMethod = class_getInstanceMethod(superclass, selector);
-    Method instanceMethod = class_getInstanceMethod([self class], selector);
+    Method instanceMethod = class_getInstanceMethod(aClass, selector);
     if (!instanceMethod || instanceMethod == superclassMethod) {
         return NO;
     }
@@ -83,6 +86,20 @@
     if (returnValue) {
         [invocation getReturnValue:returnValue];
     }
+}
+
+- (void)qmui_enumrateIvarsUsingBlock:(void (^)(Ivar ivar, NSString *ivarName))block {
+    [NSObject qmui_enumrateIvarsOfClass:self.class usingBlock:block];
+}
+
++ (void)qmui_enumrateIvarsOfClass:(Class)aClass usingBlock:(void (^)(Ivar ivar, NSString *ivarName))block {
+    unsigned int outCount = 0;
+    Ivar *ivars = class_copyIvarList(aClass, &outCount);
+    for (unsigned int i = 0; i < outCount; i ++) {
+        Ivar ivar = ivars[i];
+        if (block) block(ivar, [NSString stringWithFormat:@"%s", ivar_getName(ivar)]);
+    }
+    free(ivars);
 }
 
 - (void)qmui_enumrateInstanceMethodsUsingBlock:(void (^)(SEL))block {

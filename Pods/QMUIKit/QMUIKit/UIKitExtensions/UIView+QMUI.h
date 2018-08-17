@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface UIView (QMUI)
 
 /**
@@ -19,15 +21,12 @@
 /// 在 iOS 11 及之后的版本，此属性将返回系统已有的 self.safeAreaInsets。在之前的版本此属性返回 UIEdgeInsetsZero
 @property(nonatomic, assign, readonly) UIEdgeInsets qmui_safeAreaInsets;
 
-/// 为了在 safeAreaInsetsDidChange 里得知变化前的 safeAreaInsets 值，增加了这个属性，注意这个属性仅在 `safeAreaInsetsDidChange` 的 super 调用前才有效。
-/// https://github.com/QMUI/QMUI_iOS/issues/253
-@property(nonatomic, assign, readonly) UIEdgeInsets qmui_safeAreaInsetsBeforeChange;
-
 - (void)qmui_removeAllSubviews;
 
-+ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
-+ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
-+ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^)(void))animations;
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^ __nullable)(BOOL finished))completion;
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^ __nullable)(void))animations completion:(void (^)(BOOL finished))completion;
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^ __nullable)(void))animations;
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay usingSpringWithDamping:(CGFloat)dampingRatio initialSpringVelocity:(CGFloat)velocity options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
 @end
 
 @interface UIView (QMUI_Runtime)
@@ -56,24 +55,24 @@
 @end
 
 
-typedef NS_OPTIONS(NSUInteger, QMUIBorderViewPosition) {
-    QMUIBorderViewPositionNone      = 0,
-    QMUIBorderViewPositionTop       = 1 << 0,
-    QMUIBorderViewPositionLeft      = 1 << 1,
-    QMUIBorderViewPositionBottom    = 1 << 2,
-    QMUIBorderViewPositionRight     = 1 << 3
+typedef NS_OPTIONS(NSUInteger, QMUIViewBorderPosition) {
+    QMUIViewBorderPositionNone      = 0,
+    QMUIViewBorderPositionTop       = 1 << 0,
+    QMUIViewBorderPositionLeft      = 1 << 1,
+    QMUIViewBorderPositionBottom    = 1 << 2,
+    QMUIViewBorderPositionRight     = 1 << 3
 };
 
 /**
  *  UIView (QMUI_Border) 为 UIView 方便地显示某几个方向上的边框。
  *
  *  系统的默认实现里，要为 UIView 加边框一般是通过 view.layer 来实现，view.layer 会给四条边都加上边框，如果你只想为其中某几条加上边框就很麻烦，于是 UIView (QMUI_Border) 提供了 qmui_borderPosition 来解决这个问题。
- *  @warning 注意如果你需要为 UIView 四条边都加上边框，请使用系统默认的 view.layer 来实现，而不要用 UIView (QMUI_Border)，会浪费资源，这也是为什么 QMUIBorderViewPosition 不提供一个 QMUIBorderViewPositionAll 枚举值的原因。
+ *  @warning 注意如果你需要为 UIView 四条边都加上边框，请使用系统默认的 view.layer 来实现，而不要用 UIView (QMUI_Border)，会浪费资源，这也是为什么 QMUIViewBorderPosition 不提供一个 QMUIViewBorderPositionAll 枚举值的原因。
  */
 @interface UIView (QMUI_Border)
 
-/// 设置边框类型，支持组合，例如：`borderPosition = QMUIBorderViewPositionTop|QMUIBorderViewPositionBottom`
-@property(nonatomic, assign) QMUIBorderViewPosition qmui_borderPosition;
+/// 设置边框类型，支持组合，例如：`borderPosition = QMUIViewBorderPositionTop|QMUIViewBorderPositionBottom`
+@property(nonatomic, assign) QMUIViewBorderPosition qmui_borderPosition;
 
 /// 边框的大小，默认为PixelOne
 @property(nonatomic, assign) IBInspectable CGFloat qmui_borderWidth;
@@ -90,6 +89,20 @@ typedef NS_OPTIONS(NSUInteger, QMUIBorderViewPosition) {
 @property(nonatomic, strong, readonly) CAShapeLayer *qmui_borderLayer;
 
 @end
+
+
+/**
+ 当某个 UIView 在 setFrame: 时高度传这个值，则会自动将 sizeThatFits 算出的高度设置为当前 view 的高度，相当于以下这段代码的简化：
+ @code
+ // 以前这么写
+ CGSize size = [view sizeThatFits:CGSizeMake(width, CGFLOAT_MAX)];
+ view.frame = CGRectMake(x, y, width, size.height);
+ 
+ // 现在可以这么写：
+ view.frame = CGRectMake(x, y, width, QMUIViewSelfSizingHeight);
+ @endcode
+ */
+extern const CGFloat QMUIViewSelfSizingHeight;
 
 /**
  *  对 view.frame 操作的简便封装，注意 view 与 view 之间互相计算时，需要保证处于同一个坐标系内。
@@ -134,6 +147,22 @@ typedef NS_OPTIONS(NSUInteger, QMUIBorderViewPosition) {
 
 @end
 
+@interface UIView (CGAffineTransform)
+
+/// 获取当前 view 的 transform scale x
+@property(nonatomic, assign, readonly) CGFloat qmui_scaleX;
+
+/// 获取当前 view 的 transform scale y
+@property(nonatomic, assign, readonly) CGFloat qmui_scaleY;
+
+/// 获取当前 view 的 transform translation x
+@property(nonatomic, assign, readonly) CGFloat qmui_translationX;
+
+/// 获取当前 view 的 transform translation y
+@property(nonatomic, assign, readonly) CGFloat qmui_translationY;
+
+@end
+
 /**
  *  方便地将某个 UIView 截图并转成一个 UIImage，注意如果这个 UIView 本身做了 transform，也不会在截图上反映出来，截图始终都是原始 UIView 的截图。
  */
@@ -142,3 +171,5 @@ typedef NS_OPTIONS(NSUInteger, QMUIBorderViewPosition) {
 - (UIImage *)qmui_snapshotLayerImage;
 - (UIImage *)qmui_snapshotImageAfterScreenUpdates:(BOOL)afterScreenUpdates;
 @end
+
+NS_ASSUME_NONNULL_END

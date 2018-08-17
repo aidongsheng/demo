@@ -9,6 +9,7 @@
 #import "UITabBar+QMUI.h"
 #import "QMUICore.h"
 #import "UITabBarItem+QMUI.h"
+#import "UIBarItem+QMUI.h"
 
 NSInteger const kLastTouchedTabBarItemIndexNone = -1;
 
@@ -24,9 +25,9 @@ NSInteger const kLastTouchedTabBarItemIndexNone = -1;
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        ReplaceMethod([self class], @selector(setItems:animated:), @selector(qmui_setItems:animated:));
-        ReplaceMethod([self class], @selector(setSelectedItem:), @selector(qmui_setSelectedItem:));
-        ReplaceMethod([self class], @selector(setFrame:), @selector(qmui_setFrame:));
+        ExchangeImplementations([self class], @selector(setItems:animated:), @selector(qmui_setItems:animated:));
+        ExchangeImplementations([self class], @selector(setSelectedItem:), @selector(qmui_setSelectedItem:));
+        ExchangeImplementations([self class], @selector(setFrame:), @selector(qmuiTabBar_setFrame:));
     });
 }
 
@@ -34,7 +35,7 @@ NSInteger const kLastTouchedTabBarItemIndexNone = -1;
     [self qmui_setItems:items animated:animated];
     
     for (UITabBarItem *item in items) {
-        UIControl *itemView = item.qmui_barButton;
+        UIControl *itemView = (UIControl *)item.qmui_view;
         [itemView addTarget:self action:@selector(handleTabBarItemViewEvent:) forControlEvents:UIControlEventTouchUpInside];
     }
 }
@@ -90,7 +91,7 @@ NSInteger const kLastTouchedTabBarItemIndexNone = -1;
     self.tabBarItemViewTouchCount = 0;
 }
 
-- (void)qmui_setFrame:(CGRect)frame {
+- (void)qmuiTabBar_setFrame:(CGRect)frame {
     if (IOS_VERSION < 11.2 && IS_58INCH_SCREEN && ShouldFixTabBarTransitionBugInIPhoneX) {
         if (CGRectGetHeight(frame) == TabBarHeight && CGRectGetMaxY(frame) < CGRectGetHeight(self.superview.bounds)) {
             // iOS 11 在界面 push 的过程中 tabBar 会瞬间往上跳，所以做这个修复。这个 bug 在 iOS 11.2 里已被系统修复。
@@ -99,7 +100,16 @@ NSInteger const kLastTouchedTabBarItemIndexNone = -1;
         }
     }
     
-    [self qmui_setFrame:frame];
+    // 修复这个 bug：https://github.com/QMUI/QMUI_iOS/issues/309
+    if (@available(iOS 11, *)) {
+        if ((CGRectGetHeight(frame) == 49 || CGRectGetHeight(frame) == 32)) {
+            CGFloat bottomSafeAreaInsets = self.safeAreaInsets.bottom > 0 ? self.safeAreaInsets.bottom : self.superview.safeAreaInsets.bottom;// 注意，如果只是拿 self.safeAreaInsets 判断，会肉眼看到高度的跳变，因此引入 superview 的值（虽然理论上 tabBar 不一定都会布局到 UITabBarController.view 的底部）
+            frame.size.height += bottomSafeAreaInsets;
+            frame.origin.y -= bottomSafeAreaInsets;
+        }
+    }
+    
+    [self qmuiTabBar_setFrame:frame];
 }
 
 #pragma mark - Swizzle Property Getter/Setter

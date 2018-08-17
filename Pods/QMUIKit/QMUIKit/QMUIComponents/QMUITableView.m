@@ -16,19 +16,19 @@
 
 - (instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
     if (self = [super initWithFrame:frame style:style]) {
-        [self didInitialized];
+        [self didInitialize];
     }
     return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        [self didInitialized];
+        [self didInitialize];
     }
     return self;
 }
 
-- (void)didInitialized {
+- (void)didInitialize {
     [self qmui_styledAsQMUITableView];
 }
 
@@ -46,7 +46,7 @@
 }
 
 - (BOOL)touchesShouldCancelInContentView:(UIView *)view {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(tableView:touchesShouldCancelInContentView:)]) {
+    if ([self.delegate respondsToSelector:@selector(tableView:touchesShouldCancelInContentView:)]) {
         return [self.delegate tableView:self touchesShouldCancelInContentView:view];
     }
     // 默认情况下只有当view是非UIControl的时候才会返回yes，这里统一对UIButton也返回yes

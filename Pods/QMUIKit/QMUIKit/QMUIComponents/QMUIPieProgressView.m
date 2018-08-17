@@ -49,7 +49,7 @@
     }
     
     // 绘制扇形进度区域
-    CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    CGPoint center = CGPointGetCenterWithRect(self.bounds);
     CGFloat radius = MIN(center.x, center.y);
     CGFloat startAngle = -M_PI_2;
     CGFloat endAngle = M_PI * 2 * self.progress + startAngle;
@@ -80,21 +80,21 @@
         self.backgroundColor = UIColorClear;
         self.tintColor = UIColorBlue;
         
-        [self didInitialized];
+        [self didInitialize];
     }
     return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        [self didInitialized];
+        [self didInitialize];
         // 从 xib 初始化的话，在 IB 里设置了 tintColor 也不会触发 tintColorDidChange，所以这里手动调用一下
         [self tintColorDidChange];
     }
     return self;
 }
 
-- (void)didInitialized {
+- (void)didInitialize {
     self.progress = 0.0;
     self.progressAnimationDuration = 0.5;
     

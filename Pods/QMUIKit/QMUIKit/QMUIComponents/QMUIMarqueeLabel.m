@@ -34,19 +34,19 @@
         self.lineBreakMode = NSLineBreakByClipping;
         self.clipsToBounds = YES;// 显示非英文字符时，滚动的时候字符会稍微露出两端，所以这里直接裁剪掉
         
-        [self didInitialized];
+        [self didInitialize];
     }
     return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        [self didInitialized];
+        [self didInitialize];
     }
     return self;
 }
 
-- (void)didInitialized {
+- (void)didInitialize {
     self.speed = .5;
     self.pauseDurationWhenMoveToEdge = 2.5;
     self.spacingBetweenHeadToTail = 40;
@@ -82,14 +82,14 @@
 - (void)setText:(NSString *)text {
     [super setText:text];
     self.offsetX = 0;
-    self.textWidth = [self sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)].width;
+    self.textWidth = [self sizeThatFits:CGSizeMax].width;
     self.displayLink.paused = ![self shouldPlayDisplayLink];
 }
 
 - (void)setAttributedText:(NSAttributedString *)attributedText {
     [super setAttributedText:attributedText];
     self.offsetX = 0;
-    self.textWidth = [self sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)].width;
+    self.textWidth = [self sizeThatFits:CGSizeMax].width;
     self.displayLink.paused = ![self shouldPlayDisplayLink];
 }
 
@@ -113,7 +113,11 @@
     }
     
     // 考虑渐变遮罩的偏移
-    CGFloat textOffsetXByFade = textInitialX < self.fadeWidth ? ((self.shouldFadeAtEdge && self.textStartAfterFade) ? self.fadeWidth : 0) : 0;
+    CGFloat textOffsetXByFade = 0;
+    BOOL shouldTextStartAfterFade = self.shouldFadeAtEdge && self.textStartAfterFade && self.textWidth > CGRectGetWidth(self.bounds);
+    if (shouldTextStartAfterFade && textInitialX < self.fadeWidth) {
+        textOffsetXByFade = self.fadeWidth;
+    }
     textInitialX += textOffsetXByFade;
     
     for (NSInteger i = 0; i < self.textRepeatCountConsiderTextWidth; i++) {
@@ -177,7 +181,7 @@
 }
 
 - (BOOL)shouldPlayDisplayLink {
-    BOOL result = self.window && CGRectGetWidth(self.bounds) > 0 && self.textWidth > (CGRectGetWidth(self.bounds) - ((self.shouldFadeAtEdge && self.textStartAfterFade) ? self.fadeWidth : 0));
+    BOOL result = self.window && CGRectGetWidth(self.bounds) > 0 && self.textWidth > CGRectGetWidth(self.bounds);
     
     // 如果 label.frame 在 window 可视区域之外，也视为不可见，暂停掉 displayLink
     if (result && self.automaticallyValidateVisibleFrame) {

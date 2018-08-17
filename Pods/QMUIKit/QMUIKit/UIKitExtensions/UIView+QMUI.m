@@ -12,6 +12,7 @@
 #import "UIColor+QMUI.h"
 #import "NSObject+QMUI.h"
 #import "UIImage+QMUI.h"
+#import "NSNumber+QMUI.h"
 #import <objc/runtime.h>
 
 @interface UIView ()
@@ -29,16 +30,18 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        
-        if (@available(iOS 11, *)) {
-            ReplaceMethod([self class], @selector(safeAreaInsetsDidChange), @selector(qmui_safeAreaInsetsDidChange));
+        SEL selectors[] = {
+            // 检查调用这系列方法的两个 view 是否存在共同的父 view，不存在则可能导致转换结果错误
+            @selector(convertPoint:toView:),
+            @selector(convertPoint:fromView:),
+            @selector(convertRect:toView:),
+            @selector(convertRect:fromView:)
+        };
+        for (NSUInteger index = 0; index < sizeof(selectors) / sizeof(SEL); index++) {
+            SEL originalSelector = selectors[index];
+            SEL swizzledSelector = NSSelectorFromString([@"qmui_" stringByAppendingString:NSStringFromSelector(originalSelector)]);
+            ExchangeImplementations([self class], originalSelector, swizzledSelector);
         }
-        
-        // 检查调用这系列方法的两个 view 是否存在共同的父 view，不存在则可能导致转换结果错误
-        ReplaceMethod([self class], @selector(convertPoint:toView:), @selector(qmui_convertPoint:toView:));
-        ReplaceMethod([self class], @selector(convertPoint:fromView:), @selector(qmui_convertPoint:fromView:));
-        ReplaceMethod([self class], @selector(convertRect:toView:), @selector(qmui_convertRect:toView:));
-        ReplaceMethod([self class], @selector(convertRect:fromView:), @selector(qmui_convertRect:fromView:));
     });
 }
 
@@ -53,25 +56,11 @@
     return UIEdgeInsetsZero;
 }
 
-static char kAssociatedObjectKey_safeAreaInsetsBeforeChange;
-- (void)setQmui_safeAreaInsetsBeforeChange:(UIEdgeInsets)qmui_safeAreaInsetsBeforeChange {
-    objc_setAssociatedObject(self, &kAssociatedObjectKey_safeAreaInsetsBeforeChange, [NSValue valueWithUIEdgeInsets:qmui_safeAreaInsetsBeforeChange], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (UIEdgeInsets)qmui_safeAreaInsetsBeforeChange {
-    return [((NSValue *)objc_getAssociatedObject(self, &kAssociatedObjectKey_safeAreaInsetsBeforeChange)) UIEdgeInsetsValue];
-}
-
-- (void)qmui_safeAreaInsetsDidChange {
-    [self qmui_safeAreaInsetsDidChange];
-    self.qmui_safeAreaInsetsBeforeChange = self.qmui_safeAreaInsets;
-}
-
 - (void)qmui_removeAllSubviews {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 }
 
-+ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion {
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^ __nullable)(BOOL finished))completion {
     if (animated) {
         [UIView animateWithDuration:duration delay:delay options:options animations:animations completion:completion];
     } else {
@@ -84,7 +73,7 @@ static char kAssociatedObjectKey_safeAreaInsetsBeforeChange;
     }
 }
 
-+ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion {
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^ __nullable)(void))animations completion:(void (^)(BOOL finished))completion {
     if (animated) {
         [UIView animateWithDuration:duration animations:animations completion:completion];
     } else {
@@ -97,12 +86,25 @@ static char kAssociatedObjectKey_safeAreaInsetsBeforeChange;
     }
 }
 
-+ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^)(void))animations {
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^ __nullable)(void))animations {
     if (animated) {
         [UIView animateWithDuration:duration animations:animations];
     } else {
         if (animations) {
             animations();
+        }
+    }
+}
+
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay usingSpringWithDamping:(CGFloat)dampingRatio initialSpringVelocity:(CGFloat)velocity options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion {
+    if (animated) {
+        [UIView animateWithDuration:duration delay:delay usingSpringWithDamping:dampingRatio initialSpringVelocity:velocity options:options animations:animations completion:completion];
+    } else {
+        if (animations) {
+            animations();
+        }
+        if (completion) {
+            completion(YES);
         }
     }
 }
@@ -124,7 +126,7 @@ static char kAssociatedObjectKey_safeAreaInsetsBeforeChange;
     
     __block BOOL isPrivate = NO;
     NSString *classString = NSStringFromClass(self.class);
-    [@[@"LayoutContainer", @"NavigationItemButton", @"NavigationItemView", @"SelectionGrabber", @"InputViewContent"] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [@[@"LayoutContainer", @"NavigationItemButton", @"NavigationItemView", @"SelectionGrabber", @"InputViewContent", @"InputSetContainer", @"TextFieldContentView"] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (([classString hasPrefix:@"UI"] || [classString hasPrefix:@"_UI"]) && [classString containsString:obj]) {
             isPrivate = YES;
             *stop = YES;
@@ -219,9 +221,9 @@ static char kAssociatedObjectKey_safeAreaInsetsBeforeChange;
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        ReplaceMethod([self class], @selector(layoutSubviews), @selector(qmui_debug_layoutSubviews));
-        ReplaceMethod([self class], @selector(addSubview:), @selector(qmui_debug_addSubview:));
-        ReplaceMethod([self class], @selector(becomeFirstResponder), @selector(qmui_debug_becomeFirstResponder));
+        ExchangeImplementations([self class], @selector(layoutSubviews), @selector(qmui_debug_layoutSubviews));
+        ExchangeImplementations([self class], @selector(addSubview:), @selector(qmui_debug_addSubview:));
+        ExchangeImplementations([self class], @selector(becomeFirstResponder), @selector(qmui_debug_becomeFirstResponder));
     });
 }
 
@@ -313,9 +315,9 @@ static char kAssociatedObjectKey_hasDebugColor;
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        ReplaceMethod([self class], @selector(initWithFrame:), @selector(qmui_initWithFrame:));
-        ReplaceMethod([self class], @selector(initWithCoder:), @selector(qmui_initWithCoder:));
-        ReplaceMethod([self class], @selector(layoutSublayersOfLayer:), @selector(qmui_layoutSublayersOfLayer:));
+        ExchangeImplementations([self class], @selector(initWithFrame:), @selector(qmui_initWithFrame:));
+        ExchangeImplementations([self class], @selector(initWithCoder:), @selector(qmui_initWithCoder:));
+        ExchangeImplementations([self class], @selector(layoutSublayersOfLayer:), @selector(qmui_layoutSublayersOfLayer:));
     });
 }
 
@@ -335,11 +337,11 @@ static char kAssociatedObjectKey_hasDebugColor;
     
     [self qmui_layoutSublayersOfLayer:layer];
     
-    if ((!self.qmui_borderLayer && self.qmui_borderPosition == QMUIBorderViewPositionNone) || (!self.qmui_borderLayer && self.qmui_borderWidth == 0)) {
+    if ((!self.qmui_borderLayer && self.qmui_borderPosition == QMUIViewBorderPositionNone) || (!self.qmui_borderLayer && self.qmui_borderWidth == 0)) {
         return;
     }
     
-    if (self.qmui_borderLayer && self.qmui_borderPosition == QMUIBorderViewPositionNone && !self.qmui_borderLayer.path) {
+    if (self.qmui_borderLayer && self.qmui_borderPosition == QMUIViewBorderPositionNone && !self.qmui_borderLayer.path) {
         return;
     }
     
@@ -364,26 +366,26 @@ static char kAssociatedObjectKey_hasDebugColor;
     
     UIBezierPath *path = nil;
     
-    if (self.qmui_borderPosition != QMUIBorderViewPositionNone) {
+    if (self.qmui_borderPosition != QMUIViewBorderPositionNone) {
         path = [UIBezierPath bezierPath];
     }
     
-    if (self.qmui_borderPosition & QMUIBorderViewPositionTop) {
+    if ((self.qmui_borderPosition & QMUIViewBorderPositionTop) == QMUIViewBorderPositionTop) {
         [path moveToPoint:CGPointMake(0, borderWidth / 2)];
         [path addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds), borderWidth / 2)];
     }
     
-    if (self.qmui_borderPosition & QMUIBorderViewPositionLeft) {
+    if ((self.qmui_borderPosition & QMUIViewBorderPositionLeft) == QMUIViewBorderPositionLeft) {
         [path moveToPoint:CGPointMake(borderWidth / 2, 0)];
         [path addLineToPoint:CGPointMake(borderWidth / 2, CGRectGetHeight(self.bounds) - 0)];
     }
     
-    if (self.qmui_borderPosition & QMUIBorderViewPositionBottom) {
+    if ((self.qmui_borderPosition & QMUIViewBorderPositionBottom) == QMUIViewBorderPositionBottom) {
         [path moveToPoint:CGPointMake(0, CGRectGetHeight(self.bounds) - borderWidth / 2)];
         [path addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds) - borderWidth / 2)];
     }
     
-    if (self.qmui_borderPosition & QMUIBorderViewPositionRight) {
+    if ((self.qmui_borderPosition & QMUIViewBorderPositionRight) == QMUIViewBorderPositionRight) {
         [path moveToPoint:CGPointMake(CGRectGetWidth(self.bounds) - borderWidth / 2, 0)];
         [path addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds) - borderWidth / 2, CGRectGetHeight(self.bounds))];
     }
@@ -397,13 +399,13 @@ static char kAssociatedObjectKey_hasDebugColor;
 }
 
 static char kAssociatedObjectKey_borderPosition;
-- (void)setQmui_borderPosition:(QMUIBorderViewPosition)qmui_borderPosition {
+- (void)setQmui_borderPosition:(QMUIViewBorderPosition)qmui_borderPosition {
     objc_setAssociatedObject(self, &kAssociatedObjectKey_borderPosition, @(qmui_borderPosition), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [self setNeedsLayout];
 }
 
-- (QMUIBorderViewPosition)qmui_borderPosition {
-    return (QMUIBorderViewPosition)[objc_getAssociatedObject(self, &kAssociatedObjectKey_borderPosition) unsignedIntegerValue];
+- (QMUIViewBorderPosition)qmui_borderPosition {
+    return (QMUIViewBorderPosition)[objc_getAssociatedObject(self, &kAssociatedObjectKey_borderPosition) unsignedIntegerValue];
 }
 
 static char kAssociatedObjectKey_borderWidth;
@@ -413,7 +415,7 @@ static char kAssociatedObjectKey_borderWidth;
 }
 
 - (CGFloat)qmui_borderWidth {
-    return (CGFloat)[objc_getAssociatedObject(self, &kAssociatedObjectKey_borderWidth) floatValue];
+    return [((NSNumber *)objc_getAssociatedObject(self, &kAssociatedObjectKey_borderWidth)) qmui_CGFloatValue];
 }
 
 static char kAssociatedObjectKey_borderColor;
@@ -433,7 +435,7 @@ static char kAssociatedObjectKey_dashPhase;
 }
 
 - (CGFloat)qmui_dashPhase {
-    return (CGFloat)[objc_getAssociatedObject(self, &kAssociatedObjectKey_dashPhase) floatValue];
+    return [(NSNumber *)objc_getAssociatedObject(self, &kAssociatedObjectKey_dashPhase) qmui_CGFloatValue];
 }
 
 static char kAssociatedObjectKey_dashPattern;
@@ -458,7 +460,24 @@ static char kAssociatedObjectKey_borderLayer;
 @end
 
 
+const CGFloat QMUIViewSelfSizingHeight = INFINITY;
+
 @implementation UIView (QMUI_Layout)
+
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        ExchangeImplementations([UIView class], @selector(setFrame:), @selector(qmui_setFrame:));
+    });
+}
+
+- (void)qmui_setFrame:(CGRect)frame {
+    if (CGRectGetWidth(frame) > 0 && isinf(CGRectGetHeight(frame))) {
+        CGFloat height = flat([self sizeThatFits:CGSizeMake(CGRectGetWidth(frame), CGFLOAT_MAX)].height);
+        frame = CGRectSetHeight(frame, height);
+    }
+    [self qmui_setFrame:frame];
+}
 
 - (CGFloat)qmui_top {
     return CGRectGetMinY(self.frame);
@@ -550,6 +569,27 @@ static char kAssociatedObjectKey_borderLayer;
 
 - (CGFloat)qmui_topWhenCenterInSuperview {
     return CGFloatGetCenter(CGRectGetHeight(self.superview.bounds), CGRectGetHeight(self.frame));
+}
+
+@end
+
+
+@implementation UIView (CGAffineTransform)
+
+- (CGFloat)qmui_scaleX {
+    return self.transform.a;
+}
+
+- (CGFloat)qmui_scaleY {
+    return self.transform.d;
+}
+
+- (CGFloat)qmui_translationX {
+    return self.transform.tx;
+}
+
+- (CGFloat)qmui_translationY {
+    return self.transform.ty;
 }
 
 @end

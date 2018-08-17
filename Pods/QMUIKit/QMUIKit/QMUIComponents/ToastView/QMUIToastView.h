@@ -19,7 +19,9 @@ typedef NS_ENUM(NSInteger, QMUIToastViewPosition) {
 /**
  * `QMUIToastView`是一个用来显示toast的控件，其主要结构包括：`backgroundView`、`contentView`，这两个view都是通过外部赋值获取，默认使用`QMUIToastBackgroundView`和`QMUIToastContentView`。
  *
- * 拓展性：`QMUIToastBackgroundView`和`QMUIToastContentView`是QMUI提供的默认的view，这两个view都可以通过appearance来修改样式，如果这两个view满足不了需求，那么也可以通过新建自定义的view来代替这两个view。另外，QMUI也提供了默认的toastAnimator来实现ToastView的显示和隐藏动画，如果需要重新定义一套动画，可以继承`QMUIToastAnimator`并且实现`QMUIToastViewAnimatorDelegate`中的协议就可以自定义自己的一套动画。
+ * 拓展性：`QMUIToastBackgroundView`和`QMUIToastContentView`是QMUI提供的默认的view，这两个view都可以通过appearance来修改样式，如果这两个view满足不了需求，那么也可以通过新建自定义的view来代替这两个view。另外，QMUI也提供了默认的toastAnimator来实现ToastView的显示和隐藏动画，如果需要重新定义一套动画，可以继承`QMUIToastAnimator`并且实现`QMUIToastAnimatorDelegate`中的协议就可以自定义自己的一套动画。
+ *
+ * 样式自定义：建议通过 tintColor 统一修改整个 toastView 的内容样式。当然你也可以单独修改 contentView.tintColor。默认情况下 QMUIToastView.tintColor = UIColorWhite。
  *
  * 建议使用`QMUIToastView`的时候，再封装一层，具体可以参考`QMUITips`这个类。
  *
@@ -122,7 +124,9 @@ typedef NS_ENUM(NSInteger, QMUIToastViewPosition) {
 @property(nonatomic, assign) CGPoint offset UI_APPEARANCE_SELECTOR;
 
 /**
- * ToastView距离上下左右的最小间距。
+ *  ToastView 距离 parentView 去除 safeAreaInsets 后的区域的上下左右间距。
+ *
+ *  例如当 marginInsets.top = 0 且 toastPosition 为 QMUIToastViewPositionTop 时，如果 parentView 是 viewController.view，则 tips 顶边缘将会紧贴 navigationBar 的底边缘。而如果 parentView 是 navigationController.view，则 tips 顶边缘将会紧贴 statusBar 的底边缘。
  */
 @property(nonatomic, assign) UIEdgeInsets marginInsets UI_APPEARANCE_SELECTOR;
 

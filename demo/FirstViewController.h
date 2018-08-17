@@ -6,7 +6,7 @@
 //  Copyright © 2018年 wcc. All rights reserved.
 //
 
-@interface FirstViewController : QMUICommonViewController
+@interface FirstViewController : QMUICommonTableViewController
 
 - (void)pop_animationDidStop:(POPAnimation *)anim finished:(BOOL)finished;
 
