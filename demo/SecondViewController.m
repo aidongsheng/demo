@@ -12,6 +12,8 @@
 #import <WebKit/WebKit.h>
 #import <UIDevice+YYAdd.h>
 #import "IPAddress.h"
+#import <SystemConfiguration/CaptiveNetwork.h>
+
 
 @interface SecondViewController ()<UIWebViewDelegate,WKUIDelegate>
 @property (nonatomic, strong) UIButton *btn;
@@ -31,19 +33,10 @@
     [_btn setTitle:@"tap" forState:UIControlStateNormal];
     [_btn setFrame:CGRectMake(0, 0, DEVICE_WIDTH, DEVICE_HEIGHT)];
     [self.view addSubview:_btn];
-    [_btn addBlockForControlEvents:UIControlEventTouchUpInside block:^(id  _Nonnull sender) {
-        [[HTTPHelper shareInstance] wccGET:@"http://ifconfig.me/ip" parameters:nil progress:^(NSProgress *downloadProgress) {
-            NSLog(@"progress:%f",(double)downloadProgress.completedUnitCount / downloadProgress.totalUnitCount);
-        } success:^(NSURLSessionDataTask *task, id  _Nullable responseObject) {
-            NSLog(@"responseObject:%@",responseObject);
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError *error) {
-            NSLog(@"error:%@",error.description);
-        }];
-    }];
     [_btn addTarget:self action:@selector(tapAction) forControlEvents:UIControlEventTouchUpInside];
     
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        
         switch (status) {
             case AFNetworkReachabilityStatusUnknown:
                 NSLog(@"未知网络状态");
@@ -62,35 +55,42 @@
                 break;
         }
     }];
-    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-}
-
-- (void)tapAction
-{
     
-    [self getIPAddress];
 }
-//获取ip地址
-- (void)getIPAddress
+
+- (id)tapAction
 {
-    InitAddresses();
-    GetIPAddresses();
-    GetHWAddresses();
-
-    int i;
-    //    NSString *deviceIP = nil;
-    for (i=0; i<MAXADDRS; ++i)
-    {
-        static unsigned long localHost = 0x7F000001;            // 127.0.0.1
-        unsigned long theAddr;
-
-        theAddr = ip_addrs[i];
-
-        if (theAddr == 0) break;
-        if (theAddr == localHost) continue;
-
-        NSLog(@"Name: %s MAC: %s IP: %s\n", if_names[i], hw_addrs[i], ip_names[i]);
+    NSDictionary *currentWifiInfo = nil;
+    // 获取当前的interface 数组
+    CFArrayRef currentInterfaces = CNCopySupportedInterfaces();
+    
+    if (!currentInterfaces) {
+        return nil;
     }
+    
+    // 类型转换，将CF对象，转为NS对象，同时将该对象的引用计数交给 ARC 管理
+    NSArray *interfaces = (__bridge NSArray *)(currentInterfaces);
+    
+    if (interfaces.count >0) {
+        for (NSString *interfaceName in interfaces) {
+            // 转换类型，不改变引用计数
+            CFDictionaryRef dictRef = CNCopyCurrentNetworkInfo((__bridge CFStringRef)(interfaceName));
+            if (dictRef) {
+                NSDictionary *networkInfo = (__bridge_transfer NSDictionary *) dictRef;
+                NSString *SSID = [networkInfo objectForKey:(__bridge_transfer NSString *)kCNNetworkInfoKeySSID];
+                NSString *BSSID = [networkInfo objectForKey:(__bridge_transfer NSString *)kCNNetworkInfoKeyBSSID];
+                NSData *SSIDDATA = [networkInfo objectForKey:(__bridge_transfer NSData *)kCNNetworkInfoKeySSIDData];
+                
+                currentWifiInfo = @{@"SSID":SSID,
+                                    @"BSSID":BSSID,
+                                    @"SSIDDATA":SSIDDATA};
+                
+            }
+        }
+    }
+    
+    NSLog(@"currentWifiInfo = %@",currentWifiInfo);
+    return  currentWifiInfo;
 }
 
 - (void)viewDidAppear:(BOOL)animated
