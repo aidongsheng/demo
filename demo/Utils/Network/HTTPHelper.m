@@ -23,16 +23,10 @@ static AFNetworkReachabilityManager *reachabilityMgr = nil;
         reachabilityMgr = [AFNetworkReachabilityManager sharedManager];
         
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-//        config.networkServiceType = NSURLNetworkServiceTypeDefault;
-//        config.requestCachePolicy = NSURLRequestUseProtocolCachePolicy;
-//        config.timeoutIntervalForRequest = 30;
-//        config.allowsCellularAccess = YES;
         if (@available(iOS 11.0, *)) {
             config.waitsForConnectivity = YES;
         }
-        sessionMgr = [[AFHTTPSessionManager alloc]initWithBaseURL:[NSURL URLWithString:@"http://192.168.101:9090"] sessionConfiguration:config];
-        [sessionMgr.requestSerializer setAuthorizationHeaderFieldWithUsername:@"aidongshengxxx@163.com" password:@"ads19890823"];
-        
+        sessionMgr = [[AFHTTPSessionManager alloc]initWithBaseURL:[NSURL URLWithString:@"http://192.168.101.90:5000"] sessionConfiguration:config];
     });
     return instance;
 }
@@ -96,7 +90,6 @@ static AFNetworkReachabilityManager *reachabilityMgr = nil;
                                                           failure:failure];
     
     [dataTask resume];
-    
     return dataTask;
 }
 

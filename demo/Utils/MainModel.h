@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSString * strCompiler;
 @property (nonatomic, strong) NSString * strMachineOSBuild;
 @property (nonatomic, strong) NSString * strDevelopmentRegion;
+@property (nonatomic, assign) BOOL isSimulator;                 //  判断当前设备是不是模拟器
 
 + (MainModel *)shareObject;
 @end

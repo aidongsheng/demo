@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		47A2CF98EAC97CBFB4182FCA /* libPods-demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E41C2690A4A9FF16D35412E1 /* libPods-demo.a */; };
 		5E0F2A21208898CD0046020F /* GCDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0F2A1F208898CC0046020F /* GCDManager.m */; };
+		5E2F18CB21422E110030828E /* ceshiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E2F18CA21422E110030828E /* ceshiView.m */; };
 		5E5EC7B22113EF3700664E93 /* BaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E5EC7B12113EF3600664E93 /* BaseTableViewCell.m */; };
 		5E5EC7B52113FFB600664E93 /* UserNewsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E5EC7B42113FFB600664E93 /* UserNewsTableViewCell.m */; };
 		5E5EC7BA2114000900664E93 /* UserNewsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E5EC7B92114000900664E93 /* UserNewsModel.m */; };
@@ -24,6 +25,8 @@
 		5E8AB46A2112F45700235900 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5E8AB4692112F45700235900 /* README.md */; };
 		5EA0678C208092DF00276F5A /* HTTPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA0678B208092DF00276F5A /* HTTPHelper.m */; };
 		5EA7D233211198AD00352EC4 /* MainModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EA7D232211198AD00352EC4 /* MainModel.m */; };
+		5EB97349212D11DD00BF2DE5 /* NetworkUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EB97348212D11DD00BF2DE5 /* NetworkUtil.m */; };
+		5ECD77AC2143BAF7007BED2B /* IPAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ECD77AA2143BAF7007BED2B /* IPAddress.m */; };
 		5ED84162207DD5AA00C8D96E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84161207DD5AA00C8D96E /* AppDelegate.m */; };
 		5ED84165207DD5AA00C8D96E /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84164207DD5AA00C8D96E /* FirstViewController.m */; };
 		5ED84168207DD5AA00C8D96E /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED84167207DD5AA00C8D96E /* SecondViewController.m */; };
@@ -49,6 +52,8 @@
 		5DD23A38F109CAFE85880944 /* Pods-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-demo/Pods-demo.release.xcconfig"; sourceTree = "<group>"; };
 		5E0F2A1F208898CC0046020F /* GCDManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDManager.m; sourceTree = "<group>"; };
 		5E0F2A20208898CD0046020F /* GCDManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDManager.h; sourceTree = "<group>"; };
+		5E2F18C921422E110030828E /* ceshiView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ceshiView.h; sourceTree = "<group>"; };
+		5E2F18CA21422E110030828E /* ceshiView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ceshiView.m; sourceTree = "<group>"; };
 		5E5EC7B02113EF3600664E93 /* BaseTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseTableViewCell.h; sourceTree = "<group>"; };
 		5E5EC7B12113EF3600664E93 /* BaseTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseTableViewCell.m; sourceTree = "<group>"; };
 		5E5EC7B32113FFB600664E93 /* UserNewsTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserNewsTableViewCell.h; sourceTree = "<group>"; };
@@ -73,6 +78,10 @@
 		5EA0678B208092DF00276F5A /* HTTPHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HTTPHelper.m; sourceTree = "<group>"; };
 		5EA7D231211198AD00352EC4 /* MainModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainModel.h; sourceTree = "<group>"; };
 		5EA7D232211198AD00352EC4 /* MainModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainModel.m; sourceTree = "<group>"; };
+		5EB97347212D11DD00BF2DE5 /* NetworkUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkUtil.h; sourceTree = "<group>"; };
+		5EB97348212D11DD00BF2DE5 /* NetworkUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkUtil.m; sourceTree = "<group>"; };
+		5ECD77AA2143BAF7007BED2B /* IPAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IPAddress.m; sourceTree = "<group>"; };
+		5ECD77AB2143BAF7007BED2B /* IPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPAddress.h; sourceTree = "<group>"; };
 		5ED8415D207DD5AA00C8D96E /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ED84160207DD5AA00C8D96E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5ED84161207DD5AA00C8D96E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -137,11 +146,15 @@
 		5E3415FC20804F74008070B2 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5ECD77AA2143BAF7007BED2B /* IPAddress.m */,
+				5ECD77AB2143BAF7007BED2B /* IPAddress.h */,
 				5E0F2A20208898CD0046020F /* GCDManager.h */,
 				5E0F2A1F208898CC0046020F /* GCDManager.m */,
 				5EA06789208092A900276F5A /* Network */,
 				5EA7D231211198AD00352EC4 /* MainModel.h */,
 				5EA7D232211198AD00352EC4 /* MainModel.m */,
+				5EB97347212D11DD00BF2DE5 /* NetworkUtil.h */,
+				5EB97348212D11DD00BF2DE5 /* NetworkUtil.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -245,6 +258,8 @@
 				5EEDCF9321266E53003BE6EC /* ThirdViewController.m */,
 				5EEDCF9521266E7C003BE6EC /* ForthViewController.h */,
 				5EEDCF9621266E7C003BE6EC /* ForthViewController.m */,
+				5E2F18C921422E110030828E /* ceshiView.h */,
+				5E2F18CA21422E110030828E /* ceshiView.m */,
 			);
 			path = demo;
 			sourceTree = "<group>";
@@ -534,6 +549,7 @@
 				5ED84162207DD5AA00C8D96E /* AppDelegate.m in Sources */,
 				5EEDCF9421266E53003BE6EC /* ThirdViewController.m in Sources */,
 				5ED8418A207DD83600C8D96E /* NSObject+GetClassProperty.m in Sources */,
+				5E2F18CB21422E110030828E /* ceshiView.m in Sources */,
 				5E5EC7BA2114000900664E93 /* UserNewsModel.m in Sources */,
 				5EA0678C208092DF00276F5A /* HTTPHelper.m in Sources */,
 				5E5EC7C0211402A800664E93 /* UrlHelper.m in Sources */,
@@ -542,6 +558,8 @@
 				5EDDE9BB207F0861008577DE /* UIView+TouchEvent.m in Sources */,
 				5ED8418C207DD83600C8D96E /* UIView+POPAnimation.m in Sources */,
 				5ED84173207DD5AE00C8D96E /* main.m in Sources */,
+				5EB97349212D11DD00BF2DE5 /* NetworkUtil.m in Sources */,
+				5ECD77AC2143BAF7007BED2B /* IPAddress.m in Sources */,
 				5ED84189207DD83600C8D96E /* NSDictionary+ADSCategory.m in Sources */,
 				5E5EC7B22113EF3700664E93 /* BaseTableViewCell.m in Sources */,
 				5ED84165207DD5AA00C8D96E /* FirstViewController.m in Sources */,
@@ -690,7 +708,7 @@
 				GCC_PREFIX_HEADER = "$(SRCROOT)/demo/Global/Config.pch";
 				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
 				INFOPLIST_FILE = demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -721,7 +739,7 @@
 				GCC_PREFIX_HEADER = "$(SRCROOT)/demo/Global/Config.pch";
 				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
 				INFOPLIST_FILE = demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

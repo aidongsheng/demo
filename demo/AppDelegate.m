@@ -19,11 +19,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 #if DEBUG
-    [[Fabric sharedSDK] setDebug: YES];
-    [Fabric with:@[CrashlyticsKit]];
-    [self logUser];
+//    [[Fabric sharedSDK] setDebug: YES];
+//    [Fabric with:@[CrashlyticsKit]];
+//    [self logUser];
 #else
-    [Fabric with:@[[Crashlytics class]]];
+//    [Fabric with:@[[Crashlytics class]]];
 #endif
     
     

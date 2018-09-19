@@ -94,5 +94,13 @@ static MainModel * instance;
 {
     return [[self bundleInfoDictionary] objectForKey:@"CFBundleDevelopmentRegion"];
 }
+- (BOOL)isSimulator
+{
+#if TARGET_OS_SIMULATOR
+    return YES;
+#else
+    return NO;
+#endif
+}
 
 @end

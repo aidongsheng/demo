@@ -18,6 +18,44 @@
 
 @implementation UIViewController (_DefaultView)
 
+- (void)showText:(NSString *)text
+{
+    [self showTitle:text detailText:nil imageURL:nil];
+}
+
+- (void)showTitle:(NSString *)title detailText:(NSString *)detailText
+{
+    [self showTitle:title detailText:detailText imageURL:nil];
+}
+
+- (void)showSuccess:(NSString *)title imageURL:(NSString *)imgURL
+{
+    [self showTitle:title detailText:nil imageURL:imgURL];
+}
+
+- (void)showFailure:(NSString *)title imageURL:(NSString *)imgURL
+{
+    [self showTitle:title detailText:nil imageURL:imgURL];
+}
+
+- (void)showTitle:(NSString *)title detailText:(NSString *)detailText imageURL:(NSString *)imgURL {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    hud.label.text = title;
+    hud.detailsLabel.text = detailText;
+    if ((imgURL != nil) && imgURL.length) {
+        UIImageView *customView = [[UIImageView alloc]init];
+        customView.contentMode = UIViewContentModeScaleAspectFit;
+//        customView.frame = CGRectMake(0, 0, 50, 50);
+        [customView sd_setImageWithURL:[NSURL URLWithString:imgURL]];
+        hud.customView = customView;
+        hud.mode = MBProgressHUDModeCustomView;
+    }else{
+        hud.mode = MBProgressHUDModeText;
+    }
+    [hud hideAnimated:YES afterDelay:2];
+}
+
 - (void)showLoadingView
 {
     [self.view wcc_addBackgroundColorAnimation:[UIColor colorWithHexString:@"f5f5f5"] duration:0 autoReverse:NO];

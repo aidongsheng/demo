@@ -10,6 +10,11 @@
 
 @interface UIViewController (DefaultView)
 
+- (void)showText:(NSString *)text;
+- (void)showTitle:(NSString *)title detailText:(NSString *)detailText;
+- (void)showSuccess:(NSString *)title imageURL:(NSString *)imgURL;
+- (void)showFailure:(NSString *)title imageURL:(NSString *)imgURL;
+
 - (void)showLoadingView;
 - (void)hideLoadingView;
 - (void)showNetworkErrorView;
